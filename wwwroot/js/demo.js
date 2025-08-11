@@ -3,29 +3,161 @@ let selectedAlgorithm = null;
 let problemData = null;
 let solutionData = null;
 
-// File handling
-document.getElementById('fileInput').addEventListener('change', handleFileSelect);
+document.addEventListener('DOMContentLoaded', (event) => {
+    // File handling
+    document.getElementById('fileInput').addEventListener('change', handleFileSelect);
 
-// Drag and drop functionality
-const fileContainer = document.querySelector('.file-input-container');
-fileContainer.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    fileContainer.classList.add('dragover');
+    // Drag and drop functionality
+    const fileContainer = document.querySelector('.file-input-container');
+    fileContainer.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        fileContainer.classList.add('dragover');
+    });
+
+    fileContainer.addEventListener('dragleave', () => {
+        fileContainer.classList.remove('dragover');
+    });
+
+    fileContainer.addEventListener('drop', (e) => {
+        e.preventDefault();
+        fileContainer.classList.remove('dragover');
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            handleFile(files[0]);
+        }
+    });
+
+    // Dynamic constraint management
+    document.getElementById('addConstraint').addEventListener('click', () => {
+        addConstraintRow('', '<=', '');
+    });
+
+    // Dynamic variable management
+    document.getElementById('addVariable').addEventListener('click', () => {
+        const varCount = document.querySelectorAll('#varRestrictions .variable-row').length + 1;
+        addVariableRow(`x${varCount}`, '+');
+    });
+
+    // Algorithm selection
+    document.querySelectorAll('.algo-card').forEach(card => {
+        card.addEventListener('click', () => {
+            document.querySelectorAll('.algo-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            selectedAlgorithm = card.dataset.algo;
+            document.getElementById('selectedAlgo').textContent = card.textContent.trim();
+        });
+    });
+
+    // Tab functionality
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            btn.classList.add('active');
+            document.getElementById(btn.dataset.tab + 'Tab').classList.add('active');
+        });
+    });
+
+    // Export functionality
+    document.getElementById('exportBtn').addEventListener('click', () => {
+        if (!problemData) {
+            alert('No problem to export. Please define a problem first.');
+            return;
+        }
+        
+        alert('Export functionality will be implemented here.');
+    });
+
+    // Initialize with default algorithm
+    document.querySelector('.algo-card[data-algo="primal"]').click();
+
+    // --- Sensitivity Analysis ---
+    document.getElementById('runBtn').addEventListener('click', () => {
+        alert('Run button clicked. This functionality is not yet implemented.');
+    });
+
+    document.getElementById('addActivityBtn').addEventListener('click', () => {
+        document.getElementById('addActivityFields').style.display = 'block';
+        const newActivityCoeffs = document.getElementById('newActivityCoeffs');
+        newActivityCoeffs.innerHTML = '';
+        const numConstraints = document.getElementById('simplexTableau').querySelectorAll('tbody tr').length;
+        for (let i = 0; i < numConstraints; i++) {
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.placeholder = `Coeff for row ${i + 1}`;
+            newActivityCoeffs.appendChild(input);
+        }
+    });
+
+    document.getElementById('applyAddActivity').addEventListener('click', () => {
+        const table = document.getElementById('simplexTableau');
+        const headerRow = table.querySelector('thead tr');
+        const newVarName = `x${headerRow.children.length}`;
+        const newHeader = document.createElement('th');
+        newHeader.textContent = newVarName;
+        headerRow.insertBefore(newHeader, headerRow.children[headerRow.children.length - 1]);
+
+        const bodyRows = table.querySelectorAll('tbody tr');
+        const coeffs = document.getElementById('newActivityCoeffs').querySelectorAll('input');
+        bodyRows.forEach((row, i) => {
+            const newCell = document.createElement('td');
+            newCell.setAttribute('contenteditable', 'true');
+            newCell.textContent = coeffs[i] ? coeffs[i].value : '0';
+            row.insertBefore(newCell, row.children[row.children.length - 1]);
+        });
+        document.getElementById('addActivityFields').style.display = 'none';
+        updateRemoveDropdowns();
+    });
+
+    document.getElementById('addConstraintBtn').addEventListener('click', () => {
+        document.getElementById('addConstraintFields').style.display = 'block';
+    });
+
+    document.getElementById('applyAddConstraint').addEventListener('click', () => {
+        const eq = document.getElementById('newConstraintEq').value;
+        const parts = eq.split(/([<>]=?|=)/).map(s => s.trim());
+        if (parts.length !== 3) {
+            alert('Invalid constraint format. Expected format: coefficients operator RHS (e.g., +3 +2 <= 2)');
+            return;
+        }
+        const coeffsStr = parts[0].split(/\s+/);
+        const operator = parts[1];
+        const rhs = parseFloat(parts[2]);
+
+        const table = document.getElementById('simplexTableau');
+        const newRow = table.querySelector('tbody').insertRow(-1);
+        const numCols = table.querySelector('thead tr').children.length;
+        
+        const basisCell = newRow.insertCell();
+        basisCell.textContent = `c${table.querySelectorAll('tbody tr').length - 1}`;
+
+        for (let i = 1; i < numCols - 1; i++) { // Exclude Basis and RHS columns
+            const cell = newRow.insertCell();
+            cell.setAttribute('contenteditable', 'true');
+            cell.textContent = (parseFloat(coeffsStr[i-1]) || 0).toString();
+        }
+        const rhsCell = newRow.insertCell();
+        rhsCell.setAttribute('contenteditable', 'true');
+        rhsCell.textContent = rhs.toString();
+
+        document.getElementById('addConstraintFields').style.display = 'none';
+        updateRemoveDropdowns();
+    });
+
+    // Initial setup
+    setupDropdown(document.querySelector('.dropdown:nth-of-type(1) .dropdown-toggle'), document.getElementById('removeActivityDropdown'));
+    setupDropdown(document.querySelector('.dropdown:nth-of-type(2) .dropdown-toggle'), document.getElementById('removeConstraintDropdown'));
+    updateRemoveDropdowns();
+
+    window.addEventListener('click', () => {
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            menu.style.display = 'none';
+        });
+    });
 });
 
-fileContainer.addEventListener('dragleave', () => {
-    fileContainer.classList.remove('dragover');
-});
-
-fileContainer.addEventListener('drop', (e) => {
-    e.preventDefault();
-    fileContainer.classList.remove('dragover');
-    const files = e.dataTransfer.files;
-    if (files.length > 0) {
-        handleFile(files[0]);
-    }
-});
-
+// File handling functions (outside DOMContentLoaded as they are called by event listeners)
 function handleFileSelect(event) {
     const file = event.target.files[0];
     if (file) {
@@ -104,11 +236,7 @@ function parseInputFile(content) {
     });
 }
 
-// Dynamic constraint management
-document.getElementById('addConstraint').addEventListener('click', () => {
-    addConstraintRow('', '<=', '');
-});
-
+// Dynamic constraint management (functions need to be globally accessible for Blazor interop)
 function addConstraintRow(coefficients = '', operator = '<=', rhs = '') {
     const div = document.createElement('div');
     div.className = 'constraint-row';
@@ -127,12 +255,7 @@ function addConstraintRow(coefficients = '', operator = '<=', rhs = '') {
     document.getElementById('constraints').appendChild(div);
 }
 
-// Dynamic variable management
-document.getElementById('addVariable').addEventListener('click', () => {
-    const varCount = document.querySelectorAll('#varRestrictions .variable-row').length + 1;
-    addVariableRow(`x${varCount}`, '+');
-});
-
+// Dynamic variable management (functions need to be globally accessible for Blazor interop)
 function addVariableRow(varName = '', restriction = '+') {
     const div = document.createElement('div');
     div.className = 'variable-row';
@@ -152,27 +275,7 @@ function addVariableRow(varName = '', restriction = '+') {
     document.getElementById('varRestrictions').appendChild(div);
 }
 
-// Algorithm selection
-document.querySelectorAll('.algo-card').forEach(card => {
-    card.addEventListener('click', () => {
-        document.querySelectorAll('.algo-card').forEach(c => c.classList.remove('selected'));
-        card.classList.add('selected');
-        selectedAlgorithm = card.dataset.algo;
-        document.getElementById('selectedAlgo').textContent = card.textContent.trim();
-    });
-});
-
-// Tab functionality
-document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        
-        btn.classList.add('active');
-        document.getElementById(btn.dataset.tab + 'Tab').classList.add('active');
-    });
-});
-
+// Other functions (need to be globally accessible if called from Blazor or other scripts)
 function runDualityAnalysis() {
     const dualProblemDiv = document.getElementById('dualProblem');
     dualProblemDiv.innerHTML = `
@@ -198,7 +301,6 @@ function checkDuality() {
     dualityResults.style.display = 'block';
     dualityResults.innerHTML = '<h4>Duality Check</h4><p>Strong Duality holds.</p>';
 }
-
 
 function buildProblemFromUI() {
     // Get objective function
@@ -307,93 +409,6 @@ function updateStatus(message, type) {
     badge.style.color = colors[type].color;
 }
 
-// Export functionality
-document.getElementById('exportBtn').addEventListener('click', () => {
-    if (!problemData) {
-        alert('No problem to export. Please define a problem first.');
-        return;
-    }
-    
-    alert('Export functionality will be implemented here.');
-});
-
-// Initialize with default algorithm
-document.querySelector('.algo-card[data-algo="primal"]').click();
-
-// --- Sensitivity Analysis --- //
-
-document.getElementById('runBtn').addEventListener('click', () => {
-    alert('Run button clicked. This functionality is not yet implemented.');
-});
-
-document.getElementById('addActivityBtn').addEventListener('click', () => {
-    document.getElementById('addActivityFields').style.display = 'block';
-    const newActivityCoeffs = document.getElementById('newActivityCoeffs');
-    newActivityCoeffs.innerHTML = '';
-    const numConstraints = document.getElementById('simplexTableau').querySelectorAll('tbody tr').length;
-    for (let i = 0; i < numConstraints; i++) {
-        const input = document.createElement('input');
-        input.type = 'number';
-        input.placeholder = `Coeff for row ${i + 1}`;
-        newActivityCoeffs.appendChild(input);
-    }
-});
-
-document.getElementById('applyAddActivity').addEventListener('click', () => {
-    const table = document.getElementById('simplexTableau');
-    const headerRow = table.querySelector('thead tr');
-    const newVarName = `x${headerRow.children.length}`;
-    const newHeader = document.createElement('th');
-    newHeader.textContent = newVarName;
-    headerRow.insertBefore(newHeader, headerRow.children[headerRow.children.length - 1]);
-
-    const bodyRows = table.querySelectorAll('tbody tr');
-    const coeffs = document.getElementById('newActivityCoeffs').querySelectorAll('input');
-    bodyRows.forEach((row, i) => {
-        const newCell = document.createElement('td');
-        newCell.setAttribute('contenteditable', 'true');
-        newCell.textContent = coeffs[i] ? coeffs[i].value : '0';
-        row.insertBefore(newCell, row.children[row.children.length - 1]);
-    });
-    document.getElementById('addActivityFields').style.display = 'none';
-    updateRemoveDropdowns();
-});
-
-document.getElementById('addConstraintBtn').addEventListener('click', () => {
-    document.getElementById('addConstraintFields').style.display = 'block';
-});
-
-document.getElementById('applyAddConstraint').addEventListener('click', () => {
-    const eq = document.getElementById('newConstraintEq').value;
-    const parts = eq.split(/([<>]=?|=)/).map(s => s.trim());
-    if (parts.length !== 3) {
-        alert('Invalid constraint format. Expected format: coefficients operator RHS (e.g., +3 +2 <= 2)');
-        return;
-    }
-    const coeffsStr = parts[0].split(/\s+/);
-    const operator = parts[1];
-    const rhs = parseFloat(parts[2]);
-
-    const table = document.getElementById('simplexTableau');
-    const newRow = table.querySelector('tbody').insertRow(-1);
-    const numCols = table.querySelector('thead tr').children.length;
-    
-    const basisCell = newRow.insertCell();
-    basisCell.textContent = `c${table.querySelectorAll('tbody tr').length - 1}`;
-
-    for (let i = 1; i < numCols - 1; i++) { // Exclude Basis and RHS columns
-        const cell = newRow.insertCell();
-        cell.setAttribute('contenteditable', 'true');
-        cell.textContent = (parseFloat(coeffsStr[i-1]) || 0).toString();
-    }
-    const rhsCell = newRow.insertCell();
-    rhsCell.setAttribute('contenteditable', 'true');
-    rhsCell.textContent = rhs.toString();
-
-    document.getElementById('addConstraintFields').style.display = 'none';
-    updateRemoveDropdowns();
-});
-
 function setupDropdown(button, menu) {
     button.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -449,14 +464,3 @@ function removeConstraint(e) {
     table.deleteRow(rowIndex);
     updateRemoveDropdowns();
 }
-
-// Initial setup
-setupDropdown(document.querySelector('.dropdown:nth-of-type(1) .dropdown-toggle'), document.getElementById('removeActivityDropdown'));
-setupDropdown(document.querySelector('.dropdown:nth-of-type(2) .dropdown-toggle'), document.getElementById('removeConstraintDropdown'));
-updateRemoveDropdowns();
-
-window.addEventListener('click', () => {
-    document.querySelectorAll('.dropdown-menu').forEach(menu => {
-        menu.style.display = 'none';
-    });
-});
