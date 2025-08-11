@@ -1,0 +1,27 @@
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.log
+*.pdb
+*.dll
+*.exe
+
+# Build artifacts
+bin/
+obj/
+
+# NuGet
+*.nuget.cache
+project.assets.json
+project.nuget.g.props
+project.nuget.g.targets
+
+# Rider
+.idea/
+
+# VS Code
+.vscode/
+
+# Misc
+appsettings.Development.json

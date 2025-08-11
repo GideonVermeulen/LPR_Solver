@@ -1,0 +1,250 @@
+@page "/"
+
+<PageTitle>Home</PageTitle>
+
+<div class="container">
+
+<header>
+    <div class="logo" style="display:flex; align-items:center;">
+        <i class="fas fa-calculator"></i>
+        <h1 style="margin-left:10px;">Operations Research Solver</h1>
+    </div>
+    <div class="controls" style="display:flex; gap:10px; align-items:center;">
+        <button id="importBtn" class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+            <i class="fas fa-file-upload"></i> Import
+        </button>
+        <button id="exportBtn" class="btn btn-secondary">
+            <i class="fas fa-download"></i> Export
+        </button>
+    </div>
+</header>
+
+<!-- File Import Section -->
+<div class="card">
+    <h3><i class="fas fa-file-upload"></i> Import Problem File</h3>
+    <div class="file-input-container" onclick="document.getElementById('fileInput').click()">
+        <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--gray); margin-bottom: 10px;"></i>
+        <p>Click here to select a file or drag and drop</p>
+        <p style="font-size: 0.9rem; color: var(--gray);">Supported format: .txt files following the specified format</p>
+        <input type="file" id="fileInput" accept=".txt" />
+    </div>
+    <div id="fileStatus" style="margin-top: 10px;"></div>
+</div>
+
+<!-- Problem Definition -->
+<div class="card">
+    <h3><i class="fas fa-cogs"></i> Problem Definition</h3>
+    
+    <div class="form-group">
+        <label for="objDir">Objective Function</label>
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <select id="objDir" style="width: 120px;">
+                <option value="max">Maximize</option>
+                <option value="min">Minimize</option>
+            </select>
+            <input type="text" id="objFunc" placeholder="Enter coefficients and signs (e.g., +2 +3 +3 +5 +2 +4)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Constraints</label>
+        <div id="constraints"></div>
+        <button id="addConstraint" class="btn btn-primary" style="margin-top: 10px;">
+            <i class="fas fa-plus"></i> Add Constraint
+        </button>
+    </div>
+
+    <div class="form-group">
+        <label>Variable Sign Restrictions</label>
+        <div id="varRestrictions"></div>
+        <button id="addVariable" class="btn btn-primary" style="margin-top: 10px;">
+            <i class="fas fa-plus"></i> Add Variable
+        </button>
+    </div>
+</div>
+
+<!-- Algorithm Selection -->
+<div class="card">
+    <h3><i class="fas fa-brain"></i> Algorithm Selection</h3>
+    <div class="algo-options" id="algoOptions">
+        <div class="algo-card" data-algo="primal">
+            <i class="fas fa-arrow-right"></i>
+            <span>Primal Simplex</span>
+        </div>
+        <div class="algo-card" data-algo="dual_simplex">
+            <i class="fas fa-exchange-alt"></i>
+            <span>Dual Simplex</span>
+        </div>
+        <div class="algo-card" data-algo="revised_primal">
+            <i class="fas fa-sync-alt"></i>
+            <span>Revised Primal Simplex</span>
+        </div>
+        <div class="algo-card" data-algo="branch_bound_simplex">
+            <i class="fas fa-sitemap"></i>
+            <span>Branch & Bound Simplex</span>
+        </div>
+        <div class="algo-card" data-algo="cutting_plane">
+            <i class="fas fa-cut"></i>
+            <span>Cutting Plane</span>
+        </div>
+        <div class="algo-card" data-algo="branch_bound_knapsack">
+            <i class="fas fa-shopping-bag"></i>
+            <span>Branch & Bound Knapsack</span>
+        </div>
+    </div>
+    <p style="margin-top: 15px; color: var(--gray); font-size: 0.9rem;">
+        Selected Algorithm: <span id="selectedAlgo" style="color: var(--primary); font-weight: 500;">None</span>
+    </p>
+</div>
+
+<div class="two-column">
+    <!-- Current Canonical Form & Tableau -->
+    <div class="card">
+        <h3><i class="fas fa-table"></i> Canonical Form & Current Tableau</h3>
+        <div id="canonicalForm" class="tableau-display">
+            <p style="text-align: center; color: var(--gray);">No canonical form generated yet</p>
+        </div>
+        <div id="currentTableau" class="tableau-display">
+            <p style="text-align: center; color: var(--gray);">No tableau available yet</p>
+        </div>
+    </div>
+
+    <!-- Solution Results -->
+    <div class="card">
+        <h3><i class="fas fa-bullseye"></i> Solution Results</h3>
+        <div style="margin-bottom: 15px;">
+            <span id="statusBadge" class="status-badge" style="background: #eee; color: var(--gray);">
+                <i class="fas fa-clock"></i> No solution yet
+            </span>
+        </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Variable</th>
+                        <th>Value</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="solutionTable">
+                    <tr><td colspan="3" style="text-align: center; color: var(--gray);">No results available</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- All Tableau Iterations -->
+<div class="card">
+    <h3><i class="fas fa-history"></i> All Tableau Iterations</h3>
+    <div id="allIterations" class="tableau-display">
+        <p style="text-align: center; color: var(--gray);">No iterations performed yet</p>
+    </div>
+</div>
+
+<!-- Sensitivity Analysis -->
+<div class="card">
+    <h3><i class="fas fa-chart-line"></i> Sensitivity Analysis & Duality</h3>
+    
+    <div class="tab-buttons">
+        <button class="tab-btn active" data-tab="sensitivity">Sensitivity Analysis</button>
+        <button class="tab-btn" data-tab="duality">Duality</button>
+    </div>
+    
+    <div id="sensitivityTab" class="tab-content active">
+        <h4>Simplex Tableau (Editable)</h4>
+        <table id="simplexTableau" class="editable-tableau">
+            <thead>
+                <tr>
+                    <th>Basis</th>
+                    <th>x1</th>
+                    <th>x2</th>
+                    <th>s1</th>
+                    <th>s2</th>
+                    <th>RHS</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="objective-row">
+                    <td>z</td>
+                    <td contenteditable="true">3</td>
+                    <td contenteditable="true">5</td>
+                    <td contenteditable="true">0</td>
+                    <td contenteditable="true">0</td>
+                    <td contenteditable="true">0</td>
+                </tr>
+                <tr>
+                    <td>c1</td>
+                    <td contenteditable="true">1</td>
+                    <td contenteditable="true">2</td>
+                    <td contenteditable="true">1</td>
+                    <td contenteditable="true">0</td>
+                    <td contenteditable="true">8</td>
+                </tr>
+                <tr>
+                    <td>c2</td>
+                    <td contenteditable="true">2</td>
+                    <td contenteditable="true">1</td>
+                    <td contenteditable="true">0</td>
+                    <td contenteditable="true">1</td>
+                    <td contenteditable="true">10</td>
+                </tr>
+                <tr>
+                    <td>c3</td>
+                    <td contenteditable="true">3</td>
+                    <td contenteditable="true">2</td>
+                    <td contenteditable="true">0</td>
+                    <td contenteditable="true">0</td>
+                    <td contenteditable="true">15</td>
+                </tr>
+            </tbody>
+        </table>
+        <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+            <button id="runBtn" class="btn btn-success">Run</button>
+            <button id="addActivityBtn" class="btn btn-primary">+ Add Activity</button>
+            <button id="addConstraintBtn" class="btn btn-primary">+ Add Constraint</button>
+            <div class="dropdown">
+                <button class="btn btn-danger dropdown-toggle">- Remove Activity</button>
+                <div id="removeActivityDropdown" class="dropdown-menu"></div>
+            </div>
+            <div class="dropdown">
+                <button class="btn btn-danger dropdown-toggle">- Remove Constraint</button>
+                <div id="removeConstraintDropdown" class="dropdown-menu"></div>
+            </div>
+        </div>
+        <div id="addActivityFields" style="display: none; margin-top: 15px;">
+            <div id="newActivityCoeffs"></div>
+            <button id="applyAddActivity" class="btn btn-primary">Apply</button>
+        </div>
+        <div id="addConstraintFields" style="display: none; margin-top: 15px;">
+            <input type="text" id="newConstraintEq" placeholder="e.g., +3 +2 <= 2">
+            <button id="applyAddConstraint" class="btn btn-primary">Apply</button>
+        </div>
+    </div>
+    
+    <div id="dualityTab" class="tab-content">
+        <div class="duality-container">
+            <div class="duality-box">
+                <h4>Primal Problem</h4>
+                <div id="primalProblem">
+                    <p style="color: var(--gray);">No primal problem defined</p>
+                </div>
+            </div>
+            
+            <div class="duality-box">
+                <h4>Dual Problem</h4>
+                <div id="dualProblem">
+                    <p style="color: var(--gray);">No dual problem generated</p>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top: 15px;">
+            <button class="btn btn-secondary" onclick="runDualityAnalysis()">Transform to Dual Model</button>
+            <button class="btn btn-success" onclick="showDualSolution()">Show Dual Solution</button>
+            <button class="btn btn-warning" onclick="checkDuality()">Check Duality</button>
+            <button class="btn btn-info" onclick="showShadowPrices()">Show Shadow Prices</button>
+        </div>
+        <div id="dualityResults" class="duality-results" style="margin-top: 15px; display: none;"></div>
+    </div>
+</div>
+</div>
