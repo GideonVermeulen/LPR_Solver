@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         const rhs = parseFloat(parts[2]);
 
         const table = document.getElementById('simplexTableau');
-        const newRow = table.querySelector('tbody').insertRow(-1);
+        const newRow = table.querySelector('tbody').insertCell();
         const numCols = table.querySelector('thead tr').children.length;
         
         const basisCell = newRow.insertCell();
@@ -217,10 +217,14 @@ function parseInputFile(content) {
     document.getElementById('constraints').innerHTML = '';
     
     constraintLines.forEach(line => {
-        const parts = line.split(/\s+/);
-        const rhs = parts[parts.length - 1];
-        const operator = parts[parts.length - 2];
-        const coefficients = parts.slice(0, -2).join(' ');
+        const match = line.match(/(.*?)\s*(<=|>=|=)\s*(.*)/);
+        if (!match) {
+            console.warn(`Skipping invalid constraint line: ${line}`);
+            return;
+        }
+        const coefficients = match[1].trim();
+        const operator = match[2];
+        const rhs = match[3].trim();
         
         addConstraintRow(coefficients, operator, rhs);
     });
@@ -243,15 +247,16 @@ function addConstraintRow(coefficients = '', operator = '<=', rhs = '') {
     div.innerHTML = `
         <input type="text" placeholder="Enter coefficients (e.g., +11 +8 +6 +14 +10 +10)" value="${coefficients}" />
         <select>
-            <option value="<=" ${operator === '<=' ? 'selected' : ''}>&lt;=</option>
-            <option value="=" ${operator === '=' ? 'selected' : ''}>=</option>
-            <option value=">=" ${operator === '>=' ? 'selected' : ''}>&gt;=</option>
+            <option value="<=">&lt;=</option>
+            <option value="=">=</option>
+            <option value=">=">&gt;=</option>
         </select>
         <input type="text" placeholder="RHS value" value="${rhs}" style="width: 100px;" />
         <button class="remove-btn" onclick="this.parentElement.remove()">
             <i class="fas fa-times"></i>
         </button>
     `;
+    div.querySelector('select').value = operator;
     document.getElementById('constraints').appendChild(div);
 }
 
@@ -359,36 +364,61 @@ function displayCanonicalForm(problem) {
     `;
 }
 
+// This function will be called from C#
 function displaySolution(result) {
     solutionData = result; // Store solution data
     const tbody = document.getElementById('solutionTable');
     tbody.innerHTML = `
         <tr>
             <td><strong>Objective Value</strong></td>
-            <td><strong>${result.objectiveValue}</strong></td>
+            <td><strong>${result.objectiveValue.toFixed(4)}</strong></td>
             <td>-</td>
         </tr>
     `;
     
     // Add variable values
-    Object.entries(result.variables).forEach(([name, value]) => {
+    Object.entries(result.decisionVariables).forEach(([name, value]) => {
         tbody.innerHTML += `
             <tr>
                 <td>${name}</td>
-                <td>${value}</td>
+                <td>${value.toFixed(4)}</td>
                 <td>${value > 0 ? 'Basic' : 'Non-basic'}</td>
             </tr>
         `;
     });
 }
 
+// This function will be called from C#
 function displayIterations(iterations) {
     const iterationsDiv = document.getElementById('allIterations');
-    iterationsDiv.innerHTML = ''; // Clear previous iterations
+    iterationsDiv.innerHTML = '<h4>Tableau Iterations</h4>'; // Clear previous iterations
     
-    // This is a placeholder for displaying iterations
-    iterationsDiv.innerHTML = '<p style="text-align: center; color: var(--gray);">Tableau iterations will be displayed here.</p>';
+    if (iterations && iterations.length > 0) {
+        iterations.forEach((tableau, index) => {
+            let tableHtml = `<h5>Iteration ${index + 1}</h5><table class="tableau-table"><thead><tr>`;
+            // Assuming first row of tableau is header for columns (variables + RHS)
+            // This needs to be more dynamic based on actual variable names
+            tableHtml += `<th>Basis</th>`; // Placeholder for Basis column
+            for(let j = 0; j < tableau[0].length - 1; j++) { // Exclude RHS for now, assuming it's the last column
+                tableHtml += `<th>Col ${j + 1}</th>`; // Generic column names
+            }
+            tableHtml += `<th>RHS</th></tr></thead><tbody>`;
+
+            for (let i = 0; i < tableau.length; i++) {
+                tableHtml += `<tr><td>Row ${i}</td>`; // Placeholder for Basis row
+                for (let j = 0; j < tableau[i].length; j++) {
+                    tableHtml += `<td>${tableau[i][j].toFixed(4)}</td>`;
+                }
+                tableHtml += `</tr>`;
+            }
+            tableHtml += `</tbody></table>`;
+            iterationsDiv.innerHTML += tableHtml;
+        });
+    } else {
+        iterationsDiv.innerHTML += '<p style="text-align: center; color: var(--gray);">No iterations performed or available.</p>';
+    }
 }
+
 
 function updateStatus(message, type) {
     const badge = document.getElementById('statusBadge');
