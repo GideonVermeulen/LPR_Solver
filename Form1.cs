@@ -1,3 +1,4 @@
+using Microsoft.VisualBasic.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -210,6 +211,38 @@ namespace WinFormsApp1
                     catch (Exception ex)
                     {
                         MessageBox.Show("Error exporting file: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+
+        private void sensitivityGroupBox_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void addAct_Click(object sender, EventArgs e)
+        {
+            using (var addConForm = new addCon())
+            {
+                if (addConForm.ShowDialog() == DialogResult.OK)
+                {
+                    if (!string.IsNullOrWhiteSpace(addConForm.ConstraintText))
+                    {
+                        var lines = inputTextBox.Text.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None).ToList();
+
+                        if (lines.Count == 0)
+                        {
+                            // If the textbox is empty, just add the constraint
+                            lines.Add(addConForm.ConstraintText);
+                        }
+                        else
+                        {
+                            // Insert just before the last line
+                            lines.Insert(lines.Count - 1, addConForm.ConstraintText);
+                        }
+
+                        inputTextBox.Text = string.Join(Environment.NewLine, lines);
                     }
                 }
             }

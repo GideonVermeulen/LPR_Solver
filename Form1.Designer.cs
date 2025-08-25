@@ -41,6 +41,7 @@ namespace WinFormsApp1
             panel1 = new Panel();
             panel2 = new Panel();
             sensitivityGroupBox = new GroupBox();
+            addAct = new Button();
             performAnalysisButton = new Button();
             analysisInputTextBox = new TextBox();
             shadowPricesRadioButton = new RadioButton();
@@ -186,7 +187,7 @@ namespace WinFormsApp1
             outputTextBox.Name = "outputTextBox";
             outputTextBox.ReadOnly = true;
             outputTextBox.ScrollBars = ScrollBars.Both;
-            outputTextBox.Size = new Size(1019, 210);
+            outputTextBox.Size = new Size(1019, 216);
             outputTextBox.TabIndex = 1;
             // 
             // panel1
@@ -208,11 +209,12 @@ namespace WinFormsApp1
             panel2.Dock = DockStyle.Fill;
             panel2.Location = new Point(0, 240);
             panel2.Name = "panel2";
-            panel2.Size = new Size(1019, 210);
+            panel2.Size = new Size(1019, 216);
             panel2.TabIndex = 3;
             // 
             // sensitivityGroupBox
             // 
+            sensitivityGroupBox.Controls.Add(addAct);
             sensitivityGroupBox.Controls.Add(performAnalysisButton);
             sensitivityGroupBox.Controls.Add(analysisInputTextBox);
             sensitivityGroupBox.Controls.Add(shadowPricesRadioButton);
@@ -222,12 +224,25 @@ namespace WinFormsApp1
             sensitivityGroupBox.Controls.Add(dualProblemRadioButton);
             sensitivityGroupBox.Dock = DockStyle.Bottom;
             sensitivityGroupBox.ForeColor = Color.White;
-            sensitivityGroupBox.Location = new Point(0, 450);
+            sensitivityGroupBox.Location = new Point(0, 456);
             sensitivityGroupBox.Name = "sensitivityGroupBox";
-            sensitivityGroupBox.Size = new Size(1019, 100);
+            sensitivityGroupBox.Size = new Size(1019, 94);
             sensitivityGroupBox.TabIndex = 4;
             sensitivityGroupBox.TabStop = false;
             sensitivityGroupBox.Text = "Sensitivity Analysis";
+            sensitivityGroupBox.Enter += sensitivityGroupBox_Enter;
+            // 
+            // addAct
+            // 
+            addAct.BackColor = Color.White;
+            addAct.ForeColor = Color.Black;
+            addAct.Location = new Point(537, 22);
+            addAct.Name = "addAct";
+            addAct.Size = new Size(108, 26);
+            addAct.TabIndex = 7;
+            addAct.Text = "Add Constraint";
+            addAct.UseVisualStyleBackColor = false;
+            addAct.Click += addAct_Click;
             // 
             // performAnalysisButton
             // 
@@ -235,7 +250,7 @@ namespace WinFormsApp1
             performAnalysisButton.FlatAppearance.BorderSize = 0;
             performAnalysisButton.FlatStyle = FlatStyle.Flat;
             performAnalysisButton.ForeColor = Color.White;
-            performAnalysisButton.Location = new Point(650, 60);
+            performAnalysisButton.Location = new Point(349, 52);
             performAnalysisButton.Name = "performAnalysisButton";
             performAnalysisButton.Size = new Size(140, 30);
             performAnalysisButton.TabIndex = 5;
@@ -248,7 +263,7 @@ namespace WinFormsApp1
             analysisInputTextBox.BackColor = Color.FromArgb(60, 60, 60);
             analysisInputTextBox.BorderStyle = BorderStyle.FixedSingle;
             analysisInputTextBox.ForeColor = Color.White;
-            analysisInputTextBox.Location = new Point(500, 65);
+            analysisInputTextBox.Location = new Point(349, 22);
             analysisInputTextBox.Name = "analysisInputTextBox";
             analysisInputTextBox.Size = new Size(140, 23);
             analysisInputTextBox.TabIndex = 4;
@@ -269,7 +284,7 @@ namespace WinFormsApp1
             rhsRangeRadioButton.AutoSize = true;
             rhsRangeRadioButton.Location = new Point(10, 45);
             rhsRangeRadioButton.Name = "rhsRangeRadioButton";
-            rhsRangeRadioButton.Size = new Size(109, 19);
+            rhsRangeRadioButton.Size = new Size(110, 19);
             rhsRangeRadioButton.TabIndex = 1;
             rhsRangeRadioButton.TabStop = true;
             rhsRangeRadioButton.Text = "RHS Range (Idx)";
@@ -280,7 +295,7 @@ namespace WinFormsApp1
             basicVarRangeRadioButton.AutoSize = true;
             basicVarRangeRadioButton.Location = new Point(10, 70);
             basicVarRangeRadioButton.Name = "basicVarRangeRadioButton";
-            basicVarRangeRadioButton.Size = new Size(133, 19);
+            basicVarRangeRadioButton.Size = new Size(134, 19);
             basicVarRangeRadioButton.TabIndex = 2;
             basicVarRangeRadioButton.TabStop = true;
             basicVarRangeRadioButton.Text = "Basic Var Range (Idx)";
@@ -291,7 +306,7 @@ namespace WinFormsApp1
             nonBasicVarRangeRadioButton.AutoSize = true;
             nonBasicVarRangeRadioButton.Location = new Point(160, 20);
             nonBasicVarRangeRadioButton.Name = "nonBasicVarRangeRadioButton";
-            nonBasicVarRangeRadioButton.Size = new Size(161, 19);
+            nonBasicVarRangeRadioButton.Size = new Size(162, 19);
             nonBasicVarRangeRadioButton.TabIndex = 3;
             nonBasicVarRangeRadioButton.TabStop = true;
             nonBasicVarRangeRadioButton.Text = "Non-Basic Var Range (Idx)";
@@ -355,5 +370,6 @@ namespace WinFormsApp1
         private System.Windows.Forms.RadioButton dualProblemRadioButton;
         private System.Windows.Forms.Button exportButton;
         private Button export_button;
+        private Button addAct;
     }
 }
