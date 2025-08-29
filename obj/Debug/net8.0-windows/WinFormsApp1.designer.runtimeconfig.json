@@ -12,8 +12,8 @@
       }
     ],
     "additionalProbingPaths": [
-      "C:\\Users\\gideo\\.dotnet\\store\\|arch|\\|tfm|",
-      "C:\\Users\\gideo\\.nuget\\packages",
+      "C:\\Users\\RourkeV\\.dotnet\\store\\|arch|\\|tfm|",
+      "C:\\Users\\RourkeV\\.nuget\\packages",
       "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
     ],
     "configProperties": {

@@ -1,3 +1,4 @@
+using Microsoft.VisualBasic.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -212,6 +213,19 @@ namespace WinFormsApp1
                         MessageBox.Show("Error exporting file: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
+            }
+        }
+
+        private void add_con_button_Click(object sender, EventArgs e)
+        {
+
+            var addConForm = new WinFormsApp1.Solver.Add_con();
+            addConForm.ShowDialog();
+            if (addConForm.ShowDialog() == DialogResult.OK)
+            {
+                // Access addConForm.X1, X2, X3, Sign, Rhs here
+                var problem = _lastLPProblem;
+
             }
         }
     }
