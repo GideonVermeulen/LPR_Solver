@@ -30,3 +30,21 @@ C:\Users\gideo\Documents\GitHub\LP project\Solver\bin\Debug\net8.0-windows\WinFo
 C:\Users\gideo\Documents\GitHub\LP project\Solver\bin\Debug\net8.0-windows\WinFormsApp1.pdb
 C:\Users\gideo\Documents\GitHub\LP project\Solver\obj\Debug\net8.0-windows\WinFormsApp1.genruntimeconfig.cache
 C:\Users\gideo\Documents\GitHub\LP project\Solver\obj\Debug\net8.0-windows\ref\WinFormsApp1.dll
+C:\Users\RourkeV\Source\Repos\LPR_Solver_once_more\bin\Debug\net8.0-windows\WinFormsApp1.exe
+C:\Users\RourkeV\Source\Repos\LPR_Solver_once_more\bin\Debug\net8.0-windows\WinFormsApp1.deps.json
+C:\Users\RourkeV\Source\Repos\LPR_Solver_once_more\bin\Debug\net8.0-windows\WinFormsApp1.runtimeconfig.json
+C:\Users\RourkeV\Source\Repos\LPR_Solver_once_more\bin\Debug\net8.0-windows\WinFormsApp1.dll
+C:\Users\RourkeV\Source\Repos\LPR_Solver_once_more\bin\Debug\net8.0-windows\WinFormsApp1.pdb
+C:\Users\RourkeV\Source\Repos\LPR_Solver_once_more\obj\Debug\net8.0-windows\WinFormsApp1.Form1.resources
+C:\Users\RourkeV\Source\Repos\LPR_Solver_once_more\obj\Debug\net8.0-windows\WinFormsApp1.csproj.GenerateResource.cache
+C:\Users\RourkeV\Source\Repos\LPR_Solver_once_more\obj\Debug\net8.0-windows\WinFormsApp1.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\RourkeV\Source\Repos\LPR_Solver_once_more\obj\Debug\net8.0-windows\WinFormsApp1.AssemblyInfoInputs.cache
+C:\Users\RourkeV\Source\Repos\LPR_Solver_once_more\obj\Debug\net8.0-windows\WinFormsApp1.AssemblyInfo.cs
+C:\Users\RourkeV\Source\Repos\LPR_Solver_once_more\obj\Debug\net8.0-windows\WinFormsApp1.csproj.CoreCompileInputs.cache
+C:\Users\RourkeV\Source\Repos\LPR_Solver_once_more\obj\Debug\net8.0-windows\WinFormsApp1.sourcelink.json
+C:\Users\RourkeV\Source\Repos\LPR_Solver_once_more\obj\Debug\net8.0-windows\WinFormsApp1.dll
+C:\Users\RourkeV\Source\Repos\LPR_Solver_once_more\obj\Debug\net8.0-windows\refint\WinFormsApp1.dll
+C:\Users\RourkeV\Source\Repos\LPR_Solver_once_more\obj\Debug\net8.0-windows\WinFormsApp1.pdb
+C:\Users\RourkeV\Source\Repos\LPR_Solver_once_more\obj\Debug\net8.0-windows\WinFormsApp1.genruntimeconfig.cache
+C:\Users\RourkeV\Source\Repos\LPR_Solver_once_more\obj\Debug\net8.0-windows\ref\WinFormsApp1.dll
+C:\Users\RourkeV\Source\Repos\LPR_Solver_once_more\obj\Debug\net8.0-windows\WinFormsApp1.Solver.Add_con.resources

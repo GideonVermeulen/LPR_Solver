@@ -1,3 +1,4 @@
+using Microsoft.VisualBasic.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -211,6 +212,104 @@ namespace WinFormsApp1
                     {
                         MessageBox.Show("Error exporting file: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
+                }
+            }
+        }
+
+        private void add_con_button_Click(object sender, EventArgs e)
+        {
+            if (_lastLPProblem == null || _lastSimplexResult == null)
+            {
+                MessageBox.Show("Please load and solve an LP problem first.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var addConForm = new WinFormsApp1.Solver.Add_con();
+            if (addConForm.ShowDialog() == DialogResult.OK)
+            {
+                // 1. Check if the current optimal solution satisfies the new constraint
+                double[] x = _lastSimplexResult.OptimalSolution;
+                double lhs = addConForm.X1 * x[0] + addConForm.X2 * x[1] + addConForm.X3 * x[2];
+                double rhs = addConForm.Rhs;
+                string sign = addConForm.Sign;
+                bool satisfied = false;
+
+                switch (sign)
+                {
+                    case "<=":
+                        satisfied = lhs <= rhs + 1e-8; // small tolerance for floating point
+                        break;
+                    case "=":
+                        satisfied = Math.Abs(lhs - rhs) <= 1e-8;
+                        break;
+                    case ">=":
+                        satisfied = lhs >= rhs - 1e-8;
+                        break;
+                }
+
+                if (satisfied)
+                {
+                    MessageBox.Show("The current optimal solution still satisfies the new constraint. No need to re-solve.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // 2. If not satisfied, add the constraint to the LP and re-solve
+                var problem = _lastLPProblem;
+
+                int oldRows = problem.Constraints.GetLength(0);
+                int cols = problem.Constraints.GetLength(1);
+                var newConstraints = new double[oldRows + 1, cols];
+                for (int i = 0; i < oldRows; i++)
+                    for (int j = 0; j < cols; j++)
+                        newConstraints[i, j] = problem.Constraints[i, j];
+                newConstraints[oldRows, 0] = addConForm.X1;
+                newConstraints[oldRows, 1] = addConForm.X2;
+                newConstraints[oldRows, 2] = addConForm.X3;
+
+                var newRHS = new double[problem.RHS.Length + 1];
+                problem.RHS.CopyTo(newRHS, 0);
+                newRHS[problem.RHS.Length] = addConForm.Rhs;
+
+                var newTypes = problem.ConstraintTypes.ToList();
+                LPProblem.ConstraintType type = LPProblem.ConstraintType.LessThanOrEqual;
+                switch (addConForm.Sign)
+                {
+                    case "<=": type = LPProblem.ConstraintType.LessThanOrEqual; break;
+                    case "=":  type = LPProblem.ConstraintType.Equal; break;
+                    case ">=": type = LPProblem.ConstraintType.GreaterThanOrEqual; break;
+                }
+                newTypes.Add(type);
+
+                problem.Constraints = newConstraints;
+                problem.RHS = newRHS;
+                problem.ConstraintTypes = newTypes.ToArray();
+
+                // Re-solve
+                ILPSolver solver = null;
+                string selectedAlgorithm = algorithmComboBox.SelectedItem.ToString();
+                switch (selectedAlgorithm)
+                {
+                    case "Primal Simplex":
+                        solver = new PrimalSimplexSolver();
+                        break;
+                    case "Revised Primal Simplex":
+                        solver = new RevisedPrimalSimplexSolver();
+                        break;
+                    case "Branch and Bound":
+                        solver = new BranchAndBound();
+                        break;
+                    case "Cutting Plane":
+                        solver = new CuttingPlaneSolver();
+                        break;
+                    case "Knapsack":
+                        solver = new KnapsackSolver();
+                        break;
+                }
+                if (solver != null)
+                {
+                    var result = solver.Solve(problem);
+                    _lastSimplexResult = result;
+                    outputTextBox.Text = result.OutputLog;
                 }
             }
         }
