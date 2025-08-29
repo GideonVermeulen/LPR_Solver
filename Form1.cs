@@ -275,7 +275,7 @@ namespace WinFormsApp1
                 switch (addConForm.Sign)
                 {
                     case "<=": type = LPProblem.ConstraintType.LessThanOrEqual; break;
-                    case "=":  type = LPProblem.ConstraintType.Equal; break;
+                    case "=": type = LPProblem.ConstraintType.Equal; break;
                     case ">=": type = LPProblem.ConstraintType.GreaterThanOrEqual; break;
                 }
                 newTypes.Add(type);
@@ -285,6 +285,80 @@ namespace WinFormsApp1
                 problem.ConstraintTypes = newTypes.ToArray();
 
                 // Re-solve
+                ILPSolver solver = null;
+                string selectedAlgorithm = algorithmComboBox.SelectedItem.ToString();
+                switch (selectedAlgorithm)
+                {
+                    case "Primal Simplex":
+                        solver = new PrimalSimplexSolver();
+                        break;
+                    case "Revised Primal Simplex":
+                        solver = new RevisedPrimalSimplexSolver();
+                        break;
+                    case "Branch and Bound":
+                        solver = new BranchAndBound();
+                        break;
+                    case "Cutting Plane":
+                        solver = new CuttingPlaneSolver();
+                        break;
+                    case "Knapsack":
+                        solver = new KnapsackSolver();
+                        break;
+                }
+                if (solver != null)
+                {
+                    var result = solver.Solve(problem);
+                    _lastSimplexResult = result;
+                    outputTextBox.Text = result.OutputLog;
+                }
+            }
+        }
+
+        private void add_act_button_Click(object sender, EventArgs e)
+        {
+            if (_lastLPProblem == null)
+            {
+                MessageBox.Show("Please load and solve an LP problem first.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var addActForm = new WinFormsApp1.Solver.add_activity();
+            if (addActForm.ShowDialog() == DialogResult.OK)
+            {
+                var problem = _lastLPProblem;
+
+                int m = problem.Constraints.GetLength(0); // number of constraints
+                int n = problem.Constraints.GetLength(1); // number of variables
+
+                // 1. Expand Constraints matrix (add a column)
+                var newConstraints = new double[m, n + 1];
+                for (int i = 0; i < m; i++)
+                    for (int j = 0; j < n; j++)
+                        newConstraints[i, j] = problem.Constraints[i, j];
+                // Add new activity's coefficients
+                for (int i = 0; i < m; i++)
+                    newConstraints[i, n] = addActForm.ConstraintCoeffs[i];
+
+                // 2. Expand ObjectiveCoefficients
+                var newObjCoeffs = new double[n + 1];
+                for (int j = 0; j < n; j++)
+                    newObjCoeffs[j] = problem.ObjectiveCoefficients[j];
+                newObjCoeffs[n] = addActForm.ObjCoeff;
+
+                // 3. Expand VariableTypes and VariableSigns if needed
+                var newVarTypes = problem.VariableTypes?.ToList() ?? Enumerable.Repeat(LPProblem.VarType.Continuous, n).ToList();
+                newVarTypes.Add(addActForm.VarType);
+
+                var newVarSigns = problem.VariableSigns?.ToList() ?? Enumerable.Repeat(LPProblem.VarSign.NonNegative, n).ToList();
+                newVarSigns.Add(addActForm.VarSign);
+
+                // 4. Update the problem
+                problem.Constraints = newConstraints;
+                problem.ObjectiveCoefficients = newObjCoeffs;
+                problem.VariableTypes = newVarTypes.ToArray();
+                problem.VariableSigns = newVarSigns.ToArray();
+
+                // 5. Re-solve the problem
                 ILPSolver solver = null;
                 string selectedAlgorithm = algorithmComboBox.SelectedItem.ToString();
                 switch (selectedAlgorithm)

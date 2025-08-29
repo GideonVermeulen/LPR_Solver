@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\RourkeV\\Source\\Repos\\LPR_Solver_once_more\\WinFormsApp1.csproj": {}
+    "C:\\Users\\RourkeV\\Source\\Repos\\LPR_Solver_once_more_into_the_breach\\WinFormsApp1.csproj": {}
   },
   "projects": {
-    "C:\\Users\\RourkeV\\Source\\Repos\\LPR_Solver_once_more\\WinFormsApp1.csproj": {
+    "C:\\Users\\RourkeV\\Source\\Repos\\LPR_Solver_once_more_into_the_breach\\WinFormsApp1.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\RourkeV\\Source\\Repos\\LPR_Solver_once_more\\WinFormsApp1.csproj",
+        "projectUniqueName": "C:\\Users\\RourkeV\\Source\\Repos\\LPR_Solver_once_more_into_the_breach\\WinFormsApp1.csproj",
         "projectName": "WinFormsApp1",
-        "projectPath": "C:\\Users\\RourkeV\\Source\\Repos\\LPR_Solver_once_more\\WinFormsApp1.csproj",
+        "projectPath": "C:\\Users\\RourkeV\\Source\\Repos\\LPR_Solver_once_more_into_the_breach\\WinFormsApp1.csproj",
         "packagesPath": "C:\\Users\\RourkeV\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\RourkeV\\Source\\Repos\\LPR_Solver_once_more\\obj\\",
+        "outputPath": "C:\\Users\\RourkeV\\Source\\Repos\\LPR_Solver_once_more_into_the_breach\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
