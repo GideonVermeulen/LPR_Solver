@@ -163,6 +163,7 @@
             Controls.Add(close_button);
             Controls.Add(okay_button);
             Name = "Add_con";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "Add a new Constraint";
             ResumeLayout(false);
             PerformLayout();

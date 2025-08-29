@@ -41,6 +41,7 @@ namespace WinFormsApp1
             panel1 = new Panel();
             panel2 = new Panel();
             sensitivityGroupBox = new GroupBox();
+            add_act_button = new Button();
             add_con_button = new Button();
             performAnalysisButton = new Button();
             analysisInputTextBox = new TextBox();
@@ -214,6 +215,7 @@ namespace WinFormsApp1
             // 
             // sensitivityGroupBox
             // 
+            sensitivityGroupBox.Controls.Add(add_act_button);
             sensitivityGroupBox.Controls.Add(add_con_button);
             sensitivityGroupBox.Controls.Add(performAnalysisButton);
             sensitivityGroupBox.Controls.Add(analysisInputTextBox);
@@ -231,11 +233,22 @@ namespace WinFormsApp1
             sensitivityGroupBox.TabStop = false;
             sensitivityGroupBox.Text = "Sensitivity Analysis";
             // 
+            // add_act_button
+            // 
+            add_act_button.ForeColor = Color.Black;
+            add_act_button.Location = new Point(871, 63);
+            add_act_button.Name = "add_act_button";
+            add_act_button.Size = new Size(108, 23);
+            add_act_button.TabIndex = 8;
+            add_act_button.Text = "Add Activity";
+            add_act_button.UseVisualStyleBackColor = true;
+            add_act_button.Click += add_act_button_Click;
+            // 
             // add_con_button
             // 
             add_con_button.BackColor = Color.Transparent;
             add_con_button.ForeColor = Color.Black;
-            add_con_button.Location = new Point(868, 51);
+            add_con_button.Location = new Point(871, 22);
             add_con_button.Name = "add_con_button";
             add_con_button.Size = new Size(108, 23);
             add_con_button.TabIndex = 7;
@@ -334,6 +347,7 @@ namespace WinFormsApp1
             Controls.Add(sensitivityGroupBox);
             Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Name = "Form1";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "LP Solver";
             tableLayoutPanel1.ResumeLayout(false);
             panel1.ResumeLayout(false);
@@ -370,5 +384,6 @@ namespace WinFormsApp1
         private System.Windows.Forms.Button exportButton;
         private Button export_button;
         private Button add_con_button;
+        private Button add_act_button;
     }
 }
