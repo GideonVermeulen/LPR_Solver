@@ -1,30 +1,22 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\RourkeV\\source\\repos\\LPR_Solver_once_more_into_the_breach\\",
+  "WorkspaceRootPath": "C:\\Users\\Rourke\\source\\repos\\LPR_Solver\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{8FF865DE-67D2-40FE-90D4-8428B0E6F15B}|WinFormsApp1.csproj|c:\\users\\rourkev\\source\\repos\\lpr_solver_once_more_into_the_breach\\add_activity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8FF865DE-67D2-40FE-90D4-8428B0E6F15B}|WinFormsApp1.csproj|solutionrelative:add_activity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{8FF865DE-67D2-40FE-90D4-8428B0E6F15B}|WinFormsApp1.csproj|c:\\users\\rourke\\source\\repos\\lpr_solver\\sensitivityanalyzer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8FF865DE-67D2-40FE-90D4-8428B0E6F15B}|WinFormsApp1.csproj|solutionrelative:sensitivityanalyzer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8FF865DE-67D2-40FE-90D4-8428B0E6F15B}|WinFormsApp1.csproj|C:\\Users\\RourkeV\\source\\repos\\LPR_Solver_once_more_into_the_breach\\add_activity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{8FF865DE-67D2-40FE-90D4-8428B0E6F15B}|WinFormsApp1.csproj|solutionrelative:add_activity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{8FF865DE-67D2-40FE-90D4-8428B0E6F15B}|WinFormsApp1.csproj|c:\\users\\rourkev\\source\\repos\\lpr_solver_once_more_into_the_breach\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8FF865DE-67D2-40FE-90D4-8428B0E6F15B}|WinFormsApp1.csproj|solutionrelative:form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{8FF865DE-67D2-40FE-90D4-8428B0E6F15B}|WinFormsApp1.csproj|C:\\Users\\RourkeV\\source\\repos\\LPR_Solver_once_more_into_the_breach\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{8FF865DE-67D2-40FE-90D4-8428B0E6F15B}|WinFormsApp1.csproj|c:\\users\\rourke\\source\\repos\\lpr_solver\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{8FF865DE-67D2-40FE-90D4-8428B0E6F15B}|WinFormsApp1.csproj|solutionrelative:form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8FF865DE-67D2-40FE-90D4-8428B0E6F15B}|WinFormsApp1.csproj|c:\\users\\rourkev\\source\\repos\\lpr_solver_once_more_into_the_breach\\add_con.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8FF865DE-67D2-40FE-90D4-8428B0E6F15B}|WinFormsApp1.csproj|solutionrelative:add_con.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{8FF865DE-67D2-40FE-90D4-8428B0E6F15B}|WinFormsApp1.csproj|c:\\users\\rourke\\source\\repos\\lpr_solver\\solver\\simplexsolver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8FF865DE-67D2-40FE-90D4-8428B0E6F15B}|WinFormsApp1.csproj|solutionrelative:solver\\simplexsolver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8FF865DE-67D2-40FE-90D4-8428B0E6F15B}|WinFormsApp1.csproj|c:\\users\\rourkev\\source\\repos\\lpr_solver_once_more_into_the_breach\\add_con.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{8FF865DE-67D2-40FE-90D4-8428B0E6F15B}|WinFormsApp1.csproj|solutionrelative:add_con.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+      "AbsoluteMoniker": "D:0:0:{8FF865DE-67D2-40FE-90D4-8428B0E6F15B}|WinFormsApp1.csproj|c:\\users\\rourke\\source\\repos\\lpr_solver\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8FF865DE-67D2-40FE-90D4-8428B0E6F15B}|WinFormsApp1.csproj|solutionrelative:form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -34,11 +26,15 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
             },
             {
               "$type": "Bookmark",
@@ -49,78 +45,57 @@
               "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
             },
             {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Add_con.cs",
-              "DocumentMoniker": "C:\\Users\\RourkeV\\source\\repos\\LPR_Solver_once_more_into_the_breach\\Add_con.cs",
-              "RelativeDocumentMoniker": "Add_con.cs",
-              "ToolTip": "C:\\Users\\RourkeV\\source\\repos\\LPR_Solver_once_more_into_the_breach\\Add_con.cs",
-              "RelativeToolTip": "Add_con.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-29T11:34:17.287Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Add_con.cs [Design]",
-              "DocumentMoniker": "C:\\Users\\RourkeV\\source\\repos\\LPR_Solver_once_more_into_the_breach\\Add_con.cs",
-              "RelativeDocumentMoniker": "Add_con.cs",
-              "ToolTip": "C:\\Users\\RourkeV\\source\\repos\\LPR_Solver_once_more_into_the_breach\\Add_con.cs [Design]",
-              "RelativeToolTip": "Add_con.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-29T11:34:15.083Z",
-              "EditorCaption": " [Design]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "add_activity.cs",
-              "DocumentMoniker": "C:\\Users\\RourkeV\\source\\repos\\LPR_Solver_once_more_into_the_breach\\add_activity.cs",
-              "RelativeDocumentMoniker": "add_activity.cs",
-              "ToolTip": "C:\\Users\\RourkeV\\source\\repos\\LPR_Solver_once_more_into_the_breach\\add_activity.cs",
-              "RelativeToolTip": "add_activity.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAiwBgAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-29T11:08:28.519Z",
-              "EditorCaption": ""
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
+              "Title": "SimplexSolver.cs",
+              "DocumentMoniker": "C:\\Users\\Rourke\\source\\repos\\LPR_Solver\\Solver\\SimplexSolver.cs",
+              "RelativeDocumentMoniker": "Solver\\SimplexSolver.cs",
+              "ToolTip": "C:\\Users\\Rourke\\source\\repos\\LPR_Solver\\Solver\\SimplexSolver.cs",
+              "RelativeToolTip": "Solver\\SimplexSolver.cs",
+              "ViewState": "AgIAAH8AAAAAAAAAAAAAAJoAAAA5AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-30T09:41:55.358Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "SensitivityAnalyzer.cs",
+              "DocumentMoniker": "C:\\Users\\Rourke\\source\\repos\\LPR_Solver\\SensitivityAnalyzer.cs",
+              "RelativeDocumentMoniker": "SensitivityAnalyzer.cs",
+              "ToolTip": "C:\\Users\\Rourke\\source\\repos\\LPR_Solver\\SensitivityAnalyzer.cs",
+              "RelativeToolTip": "SensitivityAnalyzer.cs",
+              "ViewState": "AgIAAFQAAAAAAAAAAAAowFEAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-30T08:36:20.403Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "Form1.cs",
-              "DocumentMoniker": "C:\\Users\\RourkeV\\source\\repos\\LPR_Solver_once_more_into_the_breach\\Form1.cs",
+              "DocumentMoniker": "C:\\Users\\Rourke\\source\\repos\\LPR_Solver\\Form1.cs",
               "RelativeDocumentMoniker": "Form1.cs",
-              "ToolTip": "C:\\Users\\RourkeV\\source\\repos\\LPR_Solver_once_more_into_the_breach\\Form1.cs",
-              "RelativeToolTip": "Form1.cs",
-              "ViewState": "AgIAAC0BAAAAAAAAAAAvwFIBAAArAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\Rourke\\source\\repos\\LPR_Solver\\Form1.cs*",
+              "RelativeToolTip": "Form1.cs*",
+              "ViewState": "AgIAAKUAAAAAAAAAAAAlwHsAAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-08-29T08:48:44.101Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
               "Title": "Form1.cs [Design]",
-              "DocumentMoniker": "C:\\Users\\RourkeV\\source\\repos\\LPR_Solver_once_more_into_the_breach\\Form1.cs",
+              "DocumentMoniker": "C:\\Users\\Rourke\\source\\repos\\LPR_Solver\\Form1.cs",
               "RelativeDocumentMoniker": "Form1.cs",
-              "ToolTip": "C:\\Users\\RourkeV\\source\\repos\\LPR_Solver_once_more_into_the_breach\\Form1.cs [Design]",
-              "RelativeToolTip": "Form1.cs [Design]",
+              "ToolTip": "C:\\Users\\Rourke\\source\\repos\\LPR_Solver\\Form1.cs [Design]*",
+              "RelativeToolTip": "Form1.cs [Design]*",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-08-29T08:44:39.87Z",
-              "EditorCaption": " [Design]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "add_activity.cs [Design]",
-              "DocumentMoniker": "C:\\Users\\RourkeV\\source\\repos\\LPR_Solver_once_more_into_the_breach\\add_activity.cs",
-              "RelativeDocumentMoniker": "add_activity.cs",
-              "ToolTip": "C:\\Users\\RourkeV\\source\\repos\\LPR_Solver_once_more_into_the_breach\\add_activity.cs [Design]",
-              "RelativeToolTip": "add_activity.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-29T10:36:59.804Z",
               "EditorCaption": " [Design]"
             }
           ]

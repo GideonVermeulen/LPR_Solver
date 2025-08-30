@@ -116,7 +116,7 @@ namespace WinFormsApp1
             algorithmComboBox.FormattingEnabled = true;
             algorithmComboBox.Location = new Point(511, 3);
             algorithmComboBox.Name = "algorithmComboBox";
-            algorithmComboBox.Size = new Size(248, 23);
+            algorithmComboBox.Size = new Size(248, 33);
             algorithmComboBox.TabIndex = 2;
             // 
             // solveButton
@@ -140,7 +140,7 @@ namespace WinFormsApp1
             label1.ForeColor = Color.White;
             label1.Location = new Point(3, 0);
             label1.Name = "label1";
-            label1.Size = new Size(35, 15);
+            label1.Size = new Size(54, 25);
             label1.TabIndex = 0;
             label1.Text = "Input";
             // 
@@ -150,7 +150,7 @@ namespace WinFormsApp1
             label2.ForeColor = Color.White;
             label2.Location = new Point(3, 0);
             label2.Name = "label2";
-            label2.Size = new Size(45, 15);
+            label2.Size = new Size(69, 25);
             label2.TabIndex = 0;
             label2.Text = "Output";
             // 
@@ -277,7 +277,7 @@ namespace WinFormsApp1
             analysisInputTextBox.ForeColor = Color.White;
             analysisInputTextBox.Location = new Point(500, 65);
             analysisInputTextBox.Name = "analysisInputTextBox";
-            analysisInputTextBox.Size = new Size(140, 23);
+            analysisInputTextBox.Size = new Size(140, 31);
             analysisInputTextBox.TabIndex = 4;
             // 
             // shadowPricesRadioButton
@@ -285,7 +285,7 @@ namespace WinFormsApp1
             shadowPricesRadioButton.AutoSize = true;
             shadowPricesRadioButton.Location = new Point(10, 20);
             shadowPricesRadioButton.Name = "shadowPricesRadioButton";
-            shadowPricesRadioButton.Size = new Size(101, 19);
+            shadowPricesRadioButton.Size = new Size(151, 29);
             shadowPricesRadioButton.TabIndex = 0;
             shadowPricesRadioButton.TabStop = true;
             shadowPricesRadioButton.Text = "Shadow Prices";
@@ -296,7 +296,7 @@ namespace WinFormsApp1
             rhsRangeRadioButton.AutoSize = true;
             rhsRangeRadioButton.Location = new Point(10, 45);
             rhsRangeRadioButton.Name = "rhsRangeRadioButton";
-            rhsRangeRadioButton.Size = new Size(110, 19);
+            rhsRangeRadioButton.Size = new Size(165, 29);
             rhsRangeRadioButton.TabIndex = 1;
             rhsRangeRadioButton.TabStop = true;
             rhsRangeRadioButton.Text = "RHS Range (Idx)";
@@ -307,7 +307,7 @@ namespace WinFormsApp1
             basicVarRangeRadioButton.AutoSize = true;
             basicVarRangeRadioButton.Location = new Point(10, 70);
             basicVarRangeRadioButton.Name = "basicVarRangeRadioButton";
-            basicVarRangeRadioButton.Size = new Size(134, 19);
+            basicVarRangeRadioButton.Size = new Size(200, 29);
             basicVarRangeRadioButton.TabIndex = 2;
             basicVarRangeRadioButton.TabStop = true;
             basicVarRangeRadioButton.Text = "Basic Var Range (Idx)";
@@ -318,7 +318,7 @@ namespace WinFormsApp1
             nonBasicVarRangeRadioButton.AutoSize = true;
             nonBasicVarRangeRadioButton.Location = new Point(160, 20);
             nonBasicVarRangeRadioButton.Name = "nonBasicVarRangeRadioButton";
-            nonBasicVarRangeRadioButton.Size = new Size(162, 19);
+            nonBasicVarRangeRadioButton.Size = new Size(241, 29);
             nonBasicVarRangeRadioButton.TabIndex = 3;
             nonBasicVarRangeRadioButton.TabStop = true;
             nonBasicVarRangeRadioButton.Text = "Non-Basic Var Range (Idx)";
@@ -329,7 +329,7 @@ namespace WinFormsApp1
             dualProblemRadioButton.AutoSize = true;
             dualProblemRadioButton.Location = new Point(160, 45);
             dualProblemRadioButton.Name = "dualProblemRadioButton";
-            dualProblemRadioButton.Size = new Size(97, 19);
+            dualProblemRadioButton.Size = new Size(145, 29);
             dualProblemRadioButton.TabIndex = 6;
             dualProblemRadioButton.TabStop = true;
             dualProblemRadioButton.Text = "Dual Problem";
@@ -337,7 +337,7 @@ namespace WinFormsApp1
             // 
             // Form1
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(28, 28, 28);
             ClientSize = new Size(1019, 550);

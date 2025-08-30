@@ -1,6 +1,7 @@
 using System;
 using System.Text; // Added
 using WinFormsApp1.Solver;
+using System.Linq; // Added
 
 namespace WinFormsApp1.Solver
 {
@@ -91,7 +92,63 @@ namespace WinFormsApp1.Solver
 
         public string SolveDualProblem()
         {
-            return "Dual Problem Solution (Not yet implemented)";
+            // Only works for standard form: maximize c^T x, Ax <= b, x >= 0
+            // Dual: minimize b^T y, A^T y >= c, y >= 0
+
+            int m = _problem.Constraints.GetLength(0); // number of constraints
+            int n = _problem.Constraints.GetLength(1); // number of variables
+
+            // Build dual problem data
+            double[] dualObj = (double[])_problem.RHS.Clone(); // b becomes objective
+            double[,] dualA = new double[n, m]; // A^T
+            for (int i = 0; i < m; i++)
+                for (int j = 0; j < n; j++)
+                    dualA[j, i] = _problem.Constraints[i, j];
+
+            double[] dualRHS = (double[])_problem.ObjectiveCoefficients.Clone(); // c becomes RHS
+
+            // All dual variables are non-negative for <= primal constraints
+            var dualConstraintTypes = new LPProblem.ConstraintType[n];
+            for (int i = 0; i < n; i++)
+                dualConstraintTypes[i] = LPProblem.ConstraintType.GreaterThanOrEqual;
+
+            // All dual variables are non-negative for primal <= constraints
+            var dualVarSigns = new LPProblem.VarSign[m];
+            for (int i = 0; i < m; i++)
+                dualVarSigns[i] = LPProblem.VarSign.NonNegative;
+
+            // Create dual LPProblem
+            var dualProblem = new LPProblem
+            {
+                ObjectiveCoefficients = dualObj,
+                Constraints = dualA,
+                RHS = dualRHS,
+                ConstraintTypes = dualConstraintTypes,
+                VariableSigns = dualVarSigns,
+                Maximize = false // Dual is minimization
+            };
+
+            // Solve dual using PrimalSimplexSolver (or any available solver)
+            var solver = new PrimalSimplexSolver();
+            var dualResult = solver.Solve(dualProblem);
+
+            // Output dual formulation and solution
+            var sb = new StringBuilder();
+            sb.AppendLine("=== Dual Problem Formulation ===");
+            sb.AppendLine("Minimize: " + string.Join(" + ", dualObj.Select((v, i) => $"{v}y{i + 1}")));
+            for (int i = 0; i < n; i++)
+            {
+                var terms = new List<string>();
+                for (int j = 0; j < m; j++)
+                    terms.Add($"{dualA[i, j]}y{j + 1}");
+                sb.AppendLine(string.Join(" + ", terms) + $" >= {dualRHS[i]}");
+            }
+            sb.AppendLine("y >= 0");
+            sb.AppendLine();
+            sb.AppendLine("=== Dual Solution ===");
+            sb.AppendLine(dualResult.OutputLog);
+
+            return sb.ToString();
         }
 
         private double[,] TransposeMatrix(double[,] matrix)
