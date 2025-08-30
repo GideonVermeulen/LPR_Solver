@@ -82,7 +82,7 @@ namespace WinFormsApp1.Solver
                 sb.AppendLine(string.Format("-- Node {0} :: {1}", explored, node));
 
                 // Solve LP relaxation at this node
-                var lp = SolveRelaxation(cOrig, A, b, node.L, node.U, _tol);
+                                            var lp = SolveRelaxation(cOrig, A, b, node.L, node.U, _tol, sb);
 
                 if (lp.Status == LPStatus.Infeasible)
                 {
@@ -221,7 +221,7 @@ namespace WinFormsApp1.Solver
         }
 
         // ---------------- LP Relaxation with bounds via variable shifting ----------------
-        private LPResult SolveRelaxation(double[] c, double[,] A, double[] b, double[] L, double[] U, double tol)
+        private LPResult SolveRelaxation(double[] c, double[,] A, double[] b, double[] L, double[] U, double tol, StringBuilder sb)
         {
             int m = A.GetLength(0);
             int n = A.GetLength(1);
@@ -265,7 +265,7 @@ namespace WinFormsApp1.Solver
 
             // Solve max c^T x = c^T (y + L) = c^T y + c^T L
             // So objective on y is c, and we add constant shift c^T L afterwards.
-            var lp = RevisedSimplexNumericMax(A2, b2, c, tol);
+            var lp = RevisedSimplexNumericMax(A2, b2, c, tol, sb);
             if (lp.Status != LPStatus.Optimal) return lp;
 
             // Map back: x = y + L
@@ -276,7 +276,7 @@ namespace WinFormsApp1.Solver
         }
 
         // ---------------- Lightweight Revised Simplex that returns numeric solution ----------------
-        private LPResult RevisedSimplexNumericMax(double[,] A, double[] b, double[] c, double tol)
+        private LPResult RevisedSimplexNumericMax(double[,] A, double[] b, double[] c, double tol, StringBuilder sb)
         {
             int m = A.GetLength(0);
             int n = A.GetLength(1);
@@ -299,20 +299,34 @@ namespace WinFormsApp1.Solver
             int[] basis = Enumerable.Range(n, m).ToArray();
             int iters = 0, maxIters = 2000;
 
+            sb.AppendLine("  Solving LP relaxation with Revised Simplex:");
+
             while (true)
             {
                 iters++;
+
                 // Build B and Binv
                 double[,] B = ExtractColumns(Afull, basis);
                 double[,] Binv = Inverse(B);
-                // y^T = c_B^T Binv
+
+                // Tableau Body
+                double[,] T_body = new double[m, N];
+                for(int i = 0; i < m; i++) {
+                    for(int j = 0; j < N; j++) {
+                        for(int k = 0; k < m; k++) {
+                            T_body[i,j] += Binv[i,k] * Afull[k,j];
+                        }
+                    }
+                }
+
+                // RHS
+                double[] rhs = MultiplyMatrixVector(Binv, b);
+
+                // Reduced costs
                 double[] cB = basis.Select(idx => cFull[idx]).ToArray();
                 double[] yT = MultiplyVectorTranspose(cB, Binv);
-
-                // Reduced costs r_j = c_j - y^T a_j
-                int total = N;
-                double[] reduced = new double[total];
-                for (int j = 0; j < total; j++)
+                double[] reduced = new double[N];
+                for (int j = 0; j < N; j++)
                 {
                     if (basis.Contains(j)) { reduced[j] = 0; continue; }
                     double[] aj = GetColumn(Afull, j);
@@ -320,8 +334,39 @@ namespace WinFormsApp1.Solver
                     reduced[j] = cFull[j] - yAj;
                 }
 
+                // Print Tableau
+                sb.AppendLine(string.Format("    Simplex Iteration {0}", iters));
+                var headerItems = new List<string>();
+                headerItems.Add("Basis");
+                for (int j = 0; j < n; j++) headerItems.Add(string.Format("x{0}", j + 1));
+                for (int j = 0; j < m; j++) headerItems.Add(string.Format("s{0}", j + 1));
+                headerItems.Add("RHS");
+                sb.AppendLine("      " + string.Join(" | ", headerItems));
+
+                for (int i = 0; i < m; i++)
+                {
+                    var rowItems = new List<string>();
+                    rowItems.Add((basis[i] < n) ? string.Format("x{0}", basis[i] + 1) : string.Format("s{0}", basis[i] - n + 1));
+                    for (int j = 0; j < N; j++)
+                    {
+                        rowItems.Add(T_body[i, j].ToString("0.###"));
+                    }
+                    rowItems.Add(rhs[i].ToString("0.###"));
+                    sb.AppendLine("      " + string.Join(" | ", rowItems));
+                }
+
+                var reducedCostRowItems = new List<string>();
+                reducedCostRowItems.Add("Cj-Zj");
+                for (int j = 0; j < N; j++)
+                {
+                    reducedCostRowItems.Add(reduced[j].ToString("0.###"));
+                }
+                reducedCostRowItems.Add(""); // Empty for RHS
+                sb.AppendLine("      " + string.Join(" | ", reducedCostRowItems));
+
+
                 int entering = -1; double best = 0.0;
-                for (int j = 0; j < total; j++) if (!basis.Contains(j) && reduced[j] > best + tol) { best = reduced[j]; entering = j; }
+                for (int j = 0; j < N; j++) if (!basis.Contains(j) && reduced[j] > best + tol) { best = reduced[j]; entering = j; }
                 if (entering == -1)
                 {
                     // Optimal: x_B = Binv b
@@ -331,14 +376,13 @@ namespace WinFormsApp1.Solver
                     double[] x = new double[n];
                     for (int i = 0; i < m; i++) if (basis[i] < n) x[basis[i]] = xB[i];
                     double obj = 0.0; for (int j = 0; j < n; j++) obj += c[j] * x[j];
+                    sb.AppendLine("    Optimal point for relaxation found.");
                     return new LPResult { Status = LPStatus.Optimal, Objective = obj, X = x };
                 }
-
-                // Direction p = Binv * a_enter
+                
+                // Ratio test on x_B / p_i
                 double[] aent = GetColumn(Afull, entering);
                 double[] p = MultiplyMatrixVector(Binv, aent);
-
-                // Ratio test on x_B / p_i
                 double[] xBcur = MultiplyMatrixVector(Binv, b);
                 double minRatio = double.PositiveInfinity; int leavePos = -1;
                 for (int i = 0; i < m; i++) if (p[i] > tol)
@@ -350,6 +394,8 @@ namespace WinFormsApp1.Solver
                 {
                     return new LPResult { Status = LPStatus.Unbounded };
                 }
+                
+                sb.AppendLine(string.Format("      Entering: {0}, Leaving: {1}", entering, basis[leavePos]));
 
                 basis[leavePos] = entering;
                 if (iters > maxIters) return new LPResult { Status = LPStatus.Unbounded };
