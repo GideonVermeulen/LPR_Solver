@@ -41,11 +41,6 @@ namespace WinFormsApp1.Solver
             double reducedCost = _simplexResult.ReducedCosts[varIndex];
             double currentCoefficient = _problem.ObjectiveCoefficients[varIndex];
 
-            // For a non-basic variable in a maximization problem,
-            // its coefficient can increase by its reduced cost before it becomes basic.
-            // It can decrease infinitely without changing the optimal solution.
-            // The range is [current_coefficient - infinity, current_coefficient + reduced_cost]
-
             sb.AppendLine($"Current Coefficient (c{varIndex + 1}): {currentCoefficient:F4}");
             sb.AppendLine($"Reduced Cost (Cj-Zj for x{varIndex + 1}): {reducedCost:F4}");
             sb.AppendLine($"Allowable Increase: {reducedCost:F4}");
@@ -57,12 +52,118 @@ namespace WinFormsApp1.Solver
 
         public string AnalyzeBasicVariableRange(int varIndex)
         {
-            return "Basic Variable Range Analysis for x" + (varIndex + 1) + " (Not yet implemented)";
+            if (_simplexResult == null || !_simplexResult.IsOptimal)
+            {
+                return "Cannot analyze basic variable range: No optimal solution found.";
+            }
+
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"=== Basic Variable x{varIndex + 1} Sensitivity ===");
+
+            // Check if variable is basic
+            int basicRow = Array.IndexOf(_simplexResult.FinalBasis, varIndex);
+            if (basicRow == -1)
+            {
+                return $"Variable x{varIndex + 1} is non-basic. Use AnalyzeNonBasicVariableRange instead.";
+            }
+
+            double currentCoeff = _problem.ObjectiveCoefficients[varIndex];
+            double reducedCost = 0;
+
+            double allowableIncrease = double.PositiveInfinity;
+            double allowableDecrease = double.PositiveInfinity;
+
+            int numVars = _simplexResult.FinalTableau.GetLength(1) - 1; // exclude RHS
+            int numRows = _simplexResult.FinalTableau.GetLength(0);
+
+            for (int j = 0; j < numVars; j++)
+            {
+                // Skip if j is a basic variable
+                if (_simplexResult.FinalBasis.Contains(j))
+                    continue;
+
+                double zjCoeff = _simplexResult.FinalTableau[basicRow, j];
+                double rc = _simplexResult.ReducedCosts[j];
+
+                if (Math.Abs(zjCoeff) < 1e-8)
+                    continue;
+
+                double ratio = rc / zjCoeff;
+
+                if (zjCoeff > 0)
+                {
+                    allowableDecrease = Math.Min(allowableDecrease, ratio);
+                }
+                else
+                {
+                    allowableIncrease = Math.Min(allowableIncrease, -ratio);
+                }
+            }
+
+            double lowerBound = currentCoeff - (double.IsPositiveInfinity(allowableDecrease) ? 0 : allowableDecrease);
+            double upperBound = currentCoeff + (double.IsPositiveInfinity(allowableIncrease) ? 0 : allowableIncrease);
+
+            sb.AppendLine($"Current Coefficient (c{varIndex + 1}): {currentCoeff:F4}");
+            sb.AppendLine($"Reduced Cost: {reducedCost:F4}");
+            sb.AppendLine($"Allowable Increase: {(double.IsPositiveInfinity(allowableIncrease) ? "Infinity" : allowableIncrease.ToString("F4"))}");
+            sb.AppendLine($"Allowable Decrease: {(double.IsPositiveInfinity(allowableDecrease) ? "Infinity" : allowableDecrease.ToString("F4"))}");
+            sb.AppendLine($"Range: [{(double.IsNegativeInfinity(lowerBound) ? "-Infinity" : lowerBound.ToString("F4"))}, {(double.IsPositiveInfinity(upperBound) ? "Infinity" : upperBound.ToString("F4"))}]");
+
+            return sb.ToString();
         }
 
         public string AnalyzeRHSConstraintRange(int constraintIndex)
         {
-            return "RHS Constraint Range Analysis for constraint " + (constraintIndex + 1) + " (Not yet implemented)";
+            if (_simplexResult == null || !_simplexResult.IsOptimal)
+            {
+                return "Cannot analyze constraint range: No optimal solution found.";
+            }
+
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"=== Constraint {constraintIndex + 1} RHS Sensitivity ===");
+
+            int numConstraints = _simplexResult.FinalTableau.GetLength(0);
+            int numVars = _simplexResult.FinalTableau.GetLength(1) - 1; // exclude RHS
+
+            // Get the shadow price (dual value) for this constraint
+            double shadowPrice = _simplexResult.FinalTableau[numConstraints - 1, constraintIndex];
+
+            // Get the current RHS value
+            double currentRHS = _simplexResult.FinalTableau[constraintIndex, numVars];
+
+            // Estimate allowable increase/decrease (simplified)
+            double allowableIncrease = double.PositiveInfinity;
+            double allowableDecrease = double.PositiveInfinity;
+
+            for (int i = 0; i < numConstraints - 1; i++) // skip objective row
+            {
+                if (i == constraintIndex)
+                    continue;
+
+                double coeff = _simplexResult.FinalTableau[i, constraintIndex];
+                double rhs = _simplexResult.FinalTableau[i, numVars];
+
+                if (coeff == 0)
+                    continue;
+
+                double ratio = rhs / coeff;
+
+                if (coeff > 0)
+                    allowableIncrease = Math.Min(allowableIncrease, ratio);
+                else
+                    allowableDecrease = Math.Min(allowableDecrease, -ratio);
+            }
+
+            double lowerBound = currentRHS - (double.IsPositiveInfinity(allowableDecrease) ? 0 : allowableDecrease);
+            double upperBound = currentRHS + (double.IsPositiveInfinity(allowableIncrease) ? 0 : allowableIncrease);
+
+            sb.AppendLine($"Current RHS: {currentRHS:F4}");
+            sb.AppendLine($"Shadow Price: {shadowPrice:F4}");
+            sb.AppendLine($"Allowable Increase: {(double.IsPositiveInfinity(allowableIncrease) ? "Infinity" : allowableIncrease.ToString("F4"))}");
+            sb.AppendLine($"Allowable Decrease: {(double.IsPositiveInfinity(allowableDecrease) ? "Infinity" : allowableDecrease.ToString("F4"))}");
+            sb.AppendLine($"Range: [{lowerBound:F4}, {upperBound:F4}]");
+
+            return sb.ToString();
         }
 
         public string DisplayShadowPrices()
