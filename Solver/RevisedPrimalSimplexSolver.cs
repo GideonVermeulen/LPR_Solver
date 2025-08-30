@@ -93,6 +93,10 @@ namespace WinFormsApp1.Solver
                     double obj = 0.0;
                     for (int j = 0; j < n; j++) obj += problem.ObjectiveCoefficients[j] * xFull[j];
 
+                    // Correct the sign for minimization problems
+                    if (!problem.Maximize)
+                        obj = -obj;
+
                     sb.AppendLine("Optimal solution found.");
                     sb.AppendLine(string.Format("Objective = {0}", Math.Round(obj, 6)));
                     for (int j = 0; j < n; j++) sb.AppendLine(string.Format("x{0} = {1}", j + 1, Math.Round(xFull[j], 6)));
@@ -143,6 +147,7 @@ namespace WinFormsApp1.Solver
                         sb.AppendLine("WARNING: Solution is not feasible.");
                     }
 
+                    result.OptimalObjectiveValue = obj;
                     result.OutputLog = sb.ToString();
                     return result;
                 }

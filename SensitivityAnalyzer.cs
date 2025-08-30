@@ -99,23 +99,38 @@ namespace WinFormsApp1.Solver
             int n = _problem.Constraints.GetLength(1); // number of variables
 
             // Build dual problem data
-            double[] dualObj = (double[])_problem.RHS.Clone(); // b becomes objective
+            double[] dualObj;
             double[,] dualA = new double[n, m]; // A^T
             for (int i = 0; i < m; i++)
                 for (int j = 0; j < n; j++)
                     dualA[j, i] = _problem.Constraints[i, j];
 
-            double[] dualRHS = (double[])_problem.ObjectiveCoefficients.Clone(); // c becomes RHS
+            double[] dualRHS;
 
-            // All dual variables are non-negative for <= primal constraints
-            var dualConstraintTypes = new LPProblem.ConstraintType[n];
-            for (int i = 0; i < n; i++)
-                dualConstraintTypes[i] = LPProblem.ConstraintType.GreaterThanOrEqual;
+            // Determine dual variable signs and constraints types based on primal problem
+            LPProblem.ConstraintType[] dualConstraintTypes;
+            LPProblem.VarSign[] dualVarSigns;
 
-            // All dual variables are non-negative for primal <= constraints
-            var dualVarSigns = new LPProblem.VarSign[m];
-            for (int i = 0; i < m; i++)
-                dualVarSigns[i] = LPProblem.VarSign.NonNegative;
+            bool primalIsMax = _problem.Maximize;
+
+            if (primalIsMax)
+            {
+                // Primal: max c^T x, Ax <= b
+                // Dual: min b^T y, A^T y >= c
+                dualObj = (double[])_problem.RHS.Clone();
+                dualRHS = (double[])_problem.ObjectiveCoefficients.Clone();
+                dualConstraintTypes = Enumerable.Repeat(LPProblem.ConstraintType.GreaterThanOrEqual, n).ToArray();
+                dualVarSigns = Enumerable.Repeat(LPProblem.VarSign.NonNegative, m).ToArray();
+            }
+            else
+            {
+                // Primal: min c^T x, Ax >= b
+                // Dual: max b^T y, A^T y <= c
+                dualObj = (double[])_problem.RHS.Clone();
+                dualRHS = (double[])_problem.ObjectiveCoefficients.Clone();
+                dualConstraintTypes = Enumerable.Repeat(LPProblem.ConstraintType.LessThanOrEqual, n).ToArray();
+                dualVarSigns = Enumerable.Repeat(LPProblem.VarSign.NonNegative, m).ToArray();
+            }
 
             // Create dual LPProblem
             var dualProblem = new LPProblem
@@ -125,7 +140,7 @@ namespace WinFormsApp1.Solver
                 RHS = dualRHS,
                 ConstraintTypes = dualConstraintTypes,
                 VariableSigns = dualVarSigns,
-                Maximize = false // Dual is minimization
+                Maximize = !primalIsMax // Dual sense is opposite
             };
 
             // Solve dual using PrimalSimplexSolver (or any available solver)

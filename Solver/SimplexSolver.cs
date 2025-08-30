@@ -130,16 +130,18 @@ namespace WinFormsApp1.Solver
                         obj += problem.ObjectiveCoefficients[j] * xFull[j];
                     }
 
+                    // Correct the sign for minimization problems
+                    if (!problem.Maximize)
+                        obj = -obj;
+
                     result.OptimalSolution = xFull.Take(n).ToArray(); // Only original variables
                     result.OptimalObjectiveValue = obj;
                     result.FinalTableau = T;
                     result.FinalBasis = basis;
                     result.IsOptimal = true;
 
-
                     sb.AppendLine("\n=== Optimal Solution Found ===");
                     sb.AppendLine(string.Format("Objective Value = {0}", Math.Round(obj, 4)));
-                    for (int j = 0; j < n; j++) sb.AppendLine(string.Format("x{0} = {1}", j + 1, Math.Round(xFull[j], 4)));
 
                     // Feasibility Check
                     sb.AppendLine("\n--- Feasibility Check ---");
