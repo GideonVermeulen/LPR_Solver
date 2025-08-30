@@ -71,8 +71,17 @@ namespace WinFormsApp1.Solver
                 explored++;
                 sb.AppendLine($"-- Node {explored} at level {node.Level}, Value={node.Value}, Weight={node.Weight}, Bound={node.Bound}");
 
-                if (node.Bound <= bestValue || node.Level == items.Count - 1)
+                if (node.Bound <= bestValue)
+                {
+                    sb.AppendLine("   -> Pruned by bound.");
                     continue;
+                }
+
+                if (node.Level == items.Count - 1)
+                {
+                    sb.AppendLine("   -> Leaf node.");
+                    continue;
+                }
 
                 int next = node.Level + 1;
                 var item = items[next];
@@ -87,15 +96,26 @@ namespace WinFormsApp1.Solver
                 };
                 with.Taken.Add(item.Index);
 
+                sb.AppendLine($"   -> Branching on item {item.Index} (Value={item.Value}, Weight={item.Weight})");
+
                 if (with.Weight <= capacity)
                 {
+                    sb.AppendLine($"      -> Taking item {item.Index}: New value={with.Value}, New weight={with.Weight}");
                     if (with.Value > bestValue)
                     {
                         bestValue = with.Value;
                         bestItems = new List<int>(with.Taken);
+                        sb.AppendLine($"         -> New best solution found!");
                     }
                     with.Bound = GetBound(with.Level, with.Value, with.Weight, items, capacity);
-                    if (with.Bound > bestValue) stack.Push(with);
+                    if (with.Bound > bestValue) {
+                        stack.Push(with);
+                        sb.AppendLine($"         -> Pushing node to stack with bound {with.Bound}");
+                    } else {
+                        sb.AppendLine($"         -> Pruning by bound after taking item.");
+                    }
+                } else {
+                    sb.AppendLine($"      -> Cannot take item {item.Index}, exceeds capacity.");
                 }
 
                 // Branch: skip item
@@ -107,7 +127,13 @@ namespace WinFormsApp1.Solver
                     Taken = new List<int>(node.Taken)
                 };
                 without.Bound = GetBound(without.Level, without.Value, without.Weight, items, capacity);
-                if (without.Bound > bestValue) stack.Push(without);
+                sb.AppendLine($"      -> Skipping item {item.Index}: Bound={without.Bound}");
+                if (without.Bound > bestValue) {
+                    stack.Push(without);
+                    sb.AppendLine($"         -> Pushing node to stack.");
+                } else {
+                    sb.AppendLine($"         -> Pruning by bound after skipping item.");
+                }
             }
 
             sb.AppendLine();
