@@ -1,4 +1,4 @@
-using Microsoft.VisualBasic.Logging;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -60,49 +60,28 @@ namespace WinFormsApp1
                 ILPSolver solver = null;
                 string selectedAlgorithm = algorithmComboBox.SelectedItem.ToString();
 
-                // --- Validation for Sign Restrictions (Mandatory for marks, except Knapsack) ---
                 if (selectedAlgorithm != "Knapsack" && !problem.HasSignRestrictionLine)
                 {
                     MessageBox.Show("For this project, all algorithms (except Knapsack) require explicit variable type/sign restrictions (e.g., int, bin, +, -, urs) in the input file.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                // --- Algorithm-Specific Validation ---
-                if (selectedAlgorithm == "Cutting Plane")
+                if (selectedAlgorithm == "Cutting Plane" || selectedAlgorithm == "Branch and Bound")
                 {
                     if (!problem.VariableTypes.Any(vt => vt == LPProblem.VarType.Integer || vt == LPProblem.VarType.Binary))
                     {
-                        MessageBox.Show("Cutting Plane algorithm requires at least one integer or binary variable.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return;
-                    }
-                }
-                // Add more algorithm-specific validations here if needed
-                if (selectedAlgorithm == "Branch and Bound")
-                {
-                    if (!problem.VariableTypes.Any(vt => vt == LPProblem.VarType.Integer || vt == LPProblem.VarType.Binary))
-                    {
-                        MessageBox.Show("Branch and Bound algorithm requires at least one integer or binary variable.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show($"{selectedAlgorithm} algorithm requires at least one integer or binary variable.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return;
                     }
                 }
 
                 switch (selectedAlgorithm)
                 {
-                    case "Primal Simplex":
-                        solver = new PrimalSimplexSolver();
-                        break;
-                    case "Revised Primal Simplex":
-                        solver = new RevisedPrimalSimplexSolver();
-                        break;
-                    case "Branch and Bound":
-                        solver = new BranchAndBound();
-                        break;
-                    case "Cutting Plane":
-                        solver = new CuttingPlaneSolver();
-                        break;
-                    case "Knapsack":
-                        solver = new KnapsackSolver();
-                        break;
+                    case "Primal Simplex": solver = new PrimalSimplexSolver(); break;
+                    case "Revised Primal Simplex": solver = new RevisedPrimalSimplexSolver(); break;
+                    case "Branch and Bound": solver = new BranchAndBound(); break;
+                    case "Cutting Plane": solver = new CuttingPlaneSolver(); break;
+                    case "Knapsack": solver = new KnapsackSolver(); break;
                     default:
                         MessageBox.Show("Please select a valid algorithm.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
@@ -139,54 +118,119 @@ namespace WinFormsApp1
             if (shadowPricesRadioButton.Checked)
             {
                 analysisResult = analyzer.DisplayShadowPrices();
+                outputTextBox.Text = analysisResult;
             }
-            else if (nonBasicVarRangeRadioButton.Checked)
+            else if (rangeCheck.Checked)
             {
-                if (int.TryParse(analysisInputTextBox.Text, out int varIndex))
+                if (int.TryParse(analysisInputTextBox.Text, out int globalIndex) && globalIndex > 0)
                 {
-                    analysisResult = analyzer.AnalyzeNonBasicVariableRange(varIndex - 1); // Adjust for 0-based index
+                    analysisResult = analyzer.PerformUnifiedRangeAnalysis(globalIndex);
+                    outputTextBox.Text = analysisResult;
                 }
                 else
                 {
-                    MessageBox.Show("Please enter a valid variable index for Non-Basic Variable Range.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
+                    MessageBox.Show("Please enter a valid positive index for the range analysis.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-            else if (basicVarRangeRadioButton.Checked)
+            else if (changeCheck.Checked)
             {
-                if (int.TryParse(analysisInputTextBox.Text, out int varIndex))
+                if (int.TryParse(analysisInputTextBox.Text, out int globalIndex) && globalIndex > 0)
                 {
-                    analysisResult = analyzer.AnalyzeBasicVariableRange(varIndex - 1); // Adjust for 0-based index
+                    string newValueStr = Interaction.InputBox("Enter the new value for the parameter at index " + globalIndex, "Enter New Value", "");
+                    if (double.TryParse(newValueStr, out double newValue))
+                    {
+                        UpdateProblemAndReSolve(globalIndex, newValue);
+                    }
+                    else if (!string.IsNullOrEmpty(newValueStr))
+                    {
+                        MessageBox.Show("Please enter a valid numeric value.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
                 else
                 {
-                    MessageBox.Show("Please enter a valid variable index for Basic Variable Range.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-            }
-            else if (rhsRangeRadioButton.Checked)
-            {
-                if (int.TryParse(analysisInputTextBox.Text, out int constraintIndex))
-                {
-                    analysisResult = analyzer.AnalyzeRHSConstraintRange(constraintIndex - 1); // Adjust for 0-based index
-                }
-                else
-                {
-                    MessageBox.Show("Please enter a valid constraint index for RHS Constraint Range.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
+                    MessageBox.Show("Please enter a valid positive index.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             else if (dualProblemRadioButton.Checked)
             {
-                analysisResult = analyzer.SolveDualProblem();
+                DualitySolver dualitySolver = new DualitySolver();
+                SimplexResult dualityResult = dualitySolver.SolveDuality(_lastLPProblem);
+                outputTextBox.Text += "\r\n\r\n" + dualityResult.OutputLog;
             }
             else
             {
                 MessageBox.Show("Please select a sensitivity analysis type.", "Selection Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
             }
+        }
 
-            outputTextBox.Text = analysisResult;
+        private void UpdateProblemAndReSolve(int globalIndex, double newValue)
+        {
+            try
+            {
+                LPProblem problemToUpdate = _lastLPProblem.Clone();
+                int numVars = problemToUpdate.ObjectiveCoefficients.Length;
+                bool updated = false;
+
+                if (globalIndex >= 1 && globalIndex <= numVars)
+                {
+                    problemToUpdate.ObjectiveCoefficients[globalIndex - 1] = newValue;
+                    updated = true;
+                }
+                else
+                {
+                    int currentIndex = numVars;
+                    for (int i = 0; i < problemToUpdate.RHS.Length; i++)
+                    {
+                        int startOfConstraintCoeffs = currentIndex + 1;
+                        int endOfConstraintCoeffs = currentIndex + numVars;
+                        int rhsIndex = endOfConstraintCoeffs + 1;
+
+                        if (globalIndex >= startOfConstraintCoeffs && globalIndex <= endOfConstraintCoeffs)
+                        {
+                            int coeffIndex = globalIndex - startOfConstraintCoeffs;
+                            problemToUpdate.Constraints[i, coeffIndex] = newValue;
+                            updated = true;
+                            break;
+                        }
+
+                        if (globalIndex == rhsIndex)
+                        {
+                            problemToUpdate.RHS[i] = newValue;
+                            updated = true;
+                            break;
+                        }
+                        currentIndex = rhsIndex;
+                    }
+                }
+
+                if (!updated)
+                {
+                    MessageBox.Show($"The index ({globalIndex}) is out of bounds for the given LP problem.", "Index Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                ILPSolver solver = null;
+                string selectedAlgorithm = algorithmComboBox.SelectedItem.ToString();
+                switch (selectedAlgorithm)
+                {
+                    case "Primal Simplex": solver = new PrimalSimplexSolver(); break;
+                    case "Revised Primal Simplex": solver = new RevisedPrimalSimplexSolver(); break;
+                    case "Branch and Bound": solver = new BranchAndBound(); break;
+                    case "Cutting Plane": solver = new CuttingPlaneSolver(); break;
+                    case "Knapsack": solver = new KnapsackSolver(); break;
+                }
+
+                if (solver != null)
+                {
+                    outputTextBox.Text = "--- Re-Solving with new value at index " + globalIndex + " ---\r\n\r\n";
+                    SimplexResult result = solver.Solve(problemToUpdate);
+                    outputTextBox.Text += result.OutputLog;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred during re-solve: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void export_button_Click(object sender, EventArgs e)
@@ -227,7 +271,6 @@ namespace WinFormsApp1
             var addConForm = new WinFormsApp1.Solver.Add_con();
             if (addConForm.ShowDialog() == DialogResult.OK)
             {
-                // 1. Check if the current optimal solution satisfies the new constraint
                 double[] x = _lastSimplexResult.OptimalSolution;
                 double lhs = addConForm.X1 * x[0] + addConForm.X2 * x[1] + addConForm.X3 * x[2];
                 double rhs = addConForm.Rhs;
@@ -236,15 +279,9 @@ namespace WinFormsApp1
 
                 switch (sign)
                 {
-                    case "<=":
-                        satisfied = lhs <= rhs + 1e-8; // small tolerance for floating point
-                        break;
-                    case "=":
-                        satisfied = Math.Abs(lhs - rhs) <= 1e-8;
-                        break;
-                    case ">=":
-                        satisfied = lhs >= rhs - 1e-8;
-                        break;
+                    case "<=": satisfied = lhs <= rhs + 1e-8; break;
+                    case "=": satisfied = Math.Abs(lhs - rhs) <= 1e-8; break;
+                    case ">=": satisfied = lhs >= rhs - 1e-8; break;
                 }
 
                 if (satisfied)
@@ -253,9 +290,7 @@ namespace WinFormsApp1
                     return;
                 }
 
-                // 2. If not satisfied, add the constraint to the LP and re-solve
                 var problem = _lastLPProblem;
-
                 int oldRows = problem.Constraints.GetLength(0);
                 int cols = problem.Constraints.GetLength(1);
                 var newConstraints = new double[oldRows + 1, cols];
@@ -284,26 +319,15 @@ namespace WinFormsApp1
                 problem.RHS = newRHS;
                 problem.ConstraintTypes = newTypes.ToArray();
 
-                // Re-solve
                 ILPSolver solver = null;
                 string selectedAlgorithm = algorithmComboBox.SelectedItem.ToString();
                 switch (selectedAlgorithm)
                 {
-                    case "Primal Simplex":
-                        solver = new PrimalSimplexSolver();
-                        break;
-                    case "Revised Primal Simplex":
-                        solver = new RevisedPrimalSimplexSolver();
-                        break;
-                    case "Branch and Bound":
-                        solver = new BranchAndBound();
-                        break;
-                    case "Cutting Plane":
-                        solver = new CuttingPlaneSolver();
-                        break;
-                    case "Knapsack":
-                        solver = new KnapsackSolver();
-                        break;
+                    case "Primal Simplex": solver = new PrimalSimplexSolver(); break;
+                    case "Revised Primal Simplex": solver = new RevisedPrimalSimplexSolver(); break;
+                    case "Branch and Bound": solver = new BranchAndBound(); break;
+                    case "Cutting Plane": solver = new CuttingPlaneSolver(); break;
+                    case "Knapsack": solver = new KnapsackSolver(); break;
                 }
                 if (solver != null)
                 {
@@ -326,58 +350,41 @@ namespace WinFormsApp1
             if (addActForm.ShowDialog() == DialogResult.OK)
             {
                 var problem = _lastLPProblem;
+                int m = problem.Constraints.GetLength(0);
+                int n = problem.Constraints.GetLength(1);
 
-                int m = problem.Constraints.GetLength(0); // number of constraints
-                int n = problem.Constraints.GetLength(1); // number of variables
-
-                // 1. Expand Constraints matrix (add a column)
                 var newConstraints = new double[m, n + 1];
                 for (int i = 0; i < m; i++)
                     for (int j = 0; j < n; j++)
                         newConstraints[i, j] = problem.Constraints[i, j];
-                // Add new activity's coefficients
                 for (int i = 0; i < m; i++)
                     newConstraints[i, n] = addActForm.ConstraintCoeffs[i];
 
-                // 2. Expand ObjectiveCoefficients
                 var newObjCoeffs = new double[n + 1];
                 for (int j = 0; j < n; j++)
                     newObjCoeffs[j] = problem.ObjectiveCoefficients[j];
                 newObjCoeffs[n] = addActForm.ObjCoeff;
 
-                // 3. Expand VariableTypes and VariableSigns if needed
                 var newVarTypes = problem.VariableTypes?.ToList() ?? Enumerable.Repeat(LPProblem.VarType.Continuous, n).ToList();
                 newVarTypes.Add(addActForm.VarType);
 
                 var newVarSigns = problem.VariableSigns?.ToList() ?? Enumerable.Repeat(LPProblem.VarSign.NonNegative, n).ToList();
                 newVarSigns.Add(addActForm.VarSign);
 
-                // 4. Update the problem
                 problem.Constraints = newConstraints;
                 problem.ObjectiveCoefficients = newObjCoeffs;
                 problem.VariableTypes = newVarTypes.ToArray();
                 problem.VariableSigns = newVarSigns.ToArray();
 
-                // 5. Re-solve the problem
                 ILPSolver solver = null;
                 string selectedAlgorithm = algorithmComboBox.SelectedItem.ToString();
                 switch (selectedAlgorithm)
                 {
-                    case "Primal Simplex":
-                        solver = new PrimalSimplexSolver();
-                        break;
-                    case "Revised Primal Simplex":
-                        solver = new RevisedPrimalSimplexSolver();
-                        break;
-                    case "Branch and Bound":
-                        solver = new BranchAndBound();
-                        break;
-                    case "Cutting Plane":
-                        solver = new CuttingPlaneSolver();
-                        break;
-                    case "Knapsack":
-                        solver = new KnapsackSolver();
-                        break;
+                    case "Primal Simplex": solver = new PrimalSimplexSolver(); break;
+                    case "Revised Primal Simplex": solver = new RevisedPrimalSimplexSolver(); break;
+                    case "Branch and Bound": solver = new BranchAndBound(); break;
+                    case "Cutting Plane": solver = new CuttingPlaneSolver(); break;
+                    case "Knapsack": solver = new KnapsackSolver(); break;
                 }
                 if (solver != null)
                 {
