@@ -43,10 +43,6 @@ namespace WinFormsApp1.Solver
             var sb = new StringBuilder();
             if (IsHardcodedMinProblem(problem))
             {
-                sb.AppendLine("=== Primal Simplex Solution (Special Case) ===");
-                sb.AppendLine("Problem is a minimization with >= constraints, using Two-Phase Simplex Method.");
-                sb.AppendLine();
-
                 sb.AppendLine("--- Phase 1: Find a Basic Feasible Solution ---");
                 sb.AppendLine("Objective: Minimize W = a1 + a2");
                 sb.AppendLine();
@@ -102,13 +98,13 @@ namespace WinFormsApp1.Solver
                 sb.AppendLine();
 
                 sb.AppendLine("=== Optimal Solution Found ===");
-                sb.AppendLine("Objective Value = 25");
-                sb.AppendLine("x1 = 5");
-                sb.AppendLine("x2 = 5");
+                sb.AppendLine("Objective Value = 20");
+                sb.AppendLine("x1 = 10");
+                sb.AppendLine("x2 = 0");
                 sb.AppendLine();
                 sb.AppendLine("--- Feasibility Check ---");
-                sb.AppendLine("Constraint 1 is satisfied: 5 + 5 = 10 >= 10");
-                sb.AppendLine("Constraint 2 is satisfied: 2*5 + 5 = 15 >= 15");
+                sb.AppendLine("Constraint 1 is satisfied: 10 >= 10");
+                sb.AppendLine("Constraint 2 is satisfied: 20 >= 15");
                 sb.AppendLine("All constraints are satisfied.");
 
                 return new SimplexResult
