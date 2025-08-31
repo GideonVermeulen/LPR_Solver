@@ -46,9 +46,8 @@ namespace WinFormsApp1
             performAnalysisButton = new Button();
             analysisInputTextBox = new TextBox();
             shadowPricesRadioButton = new RadioButton();
-            rhsRangeRadioButton = new RadioButton();
-            basicVarRangeRadioButton = new RadioButton();
-            nonBasicVarRangeRadioButton = new RadioButton();
+            changeCheck = new RadioButton();
+            rangeCheck = new RadioButton();
             dualProblemRadioButton = new RadioButton();
             tableLayoutPanel1.SuspendLayout();
             panel1.SuspendLayout();
@@ -220,9 +219,8 @@ namespace WinFormsApp1
             sensitivityGroupBox.Controls.Add(performAnalysisButton);
             sensitivityGroupBox.Controls.Add(analysisInputTextBox);
             sensitivityGroupBox.Controls.Add(shadowPricesRadioButton);
-            sensitivityGroupBox.Controls.Add(rhsRangeRadioButton);
-            sensitivityGroupBox.Controls.Add(basicVarRangeRadioButton);
-            sensitivityGroupBox.Controls.Add(nonBasicVarRangeRadioButton);
+            sensitivityGroupBox.Controls.Add(changeCheck);
+            sensitivityGroupBox.Controls.Add(rangeCheck);
             sensitivityGroupBox.Controls.Add(dualProblemRadioButton);
             sensitivityGroupBox.Dock = DockStyle.Bottom;
             sensitivityGroupBox.ForeColor = Color.White;
@@ -291,43 +289,33 @@ namespace WinFormsApp1
             shadowPricesRadioButton.Text = "Shadow Prices";
             shadowPricesRadioButton.UseVisualStyleBackColor = true;
             // 
-            // rhsRangeRadioButton
+            // changeCheck
             // 
-            rhsRangeRadioButton.AutoSize = true;
-            rhsRangeRadioButton.Location = new Point(10, 45);
-            rhsRangeRadioButton.Name = "rhsRangeRadioButton";
-            rhsRangeRadioButton.Size = new Size(110, 19);
-            rhsRangeRadioButton.TabIndex = 1;
-            rhsRangeRadioButton.TabStop = true;
-            rhsRangeRadioButton.Text = "RHS Range (Idx)";
-            rhsRangeRadioButton.UseVisualStyleBackColor = true;
+            changeCheck.AutoSize = true;
+            changeCheck.Location = new Point(10, 45);
+            changeCheck.Name = "changeCheck";
+            changeCheck.Size = new Size(95, 19);
+            changeCheck.TabIndex = 1;
+            changeCheck.TabStop = true;
+            changeCheck.Text = "changecheck";
+            changeCheck.UseVisualStyleBackColor = true;
             // 
-            // basicVarRangeRadioButton
+            // rangeCheck
             // 
-            basicVarRangeRadioButton.AutoSize = true;
-            basicVarRangeRadioButton.Location = new Point(10, 70);
-            basicVarRangeRadioButton.Name = "basicVarRangeRadioButton";
-            basicVarRangeRadioButton.Size = new Size(134, 19);
-            basicVarRangeRadioButton.TabIndex = 2;
-            basicVarRangeRadioButton.TabStop = true;
-            basicVarRangeRadioButton.Text = "Basic Var Range (Idx)";
-            basicVarRangeRadioButton.UseVisualStyleBackColor = true;
-            // 
-            // nonBasicVarRangeRadioButton
-            // 
-            nonBasicVarRangeRadioButton.AutoSize = true;
-            nonBasicVarRangeRadioButton.Location = new Point(160, 20);
-            nonBasicVarRangeRadioButton.Name = "nonBasicVarRangeRadioButton";
-            nonBasicVarRangeRadioButton.Size = new Size(162, 19);
-            nonBasicVarRangeRadioButton.TabIndex = 3;
-            nonBasicVarRangeRadioButton.TabStop = true;
-            nonBasicVarRangeRadioButton.Text = "Non-Basic Var Range (Idx)";
-            nonBasicVarRangeRadioButton.UseVisualStyleBackColor = true;
+            rangeCheck.AutoSize = true;
+            rangeCheck.ForeColor = Color.White;
+            rangeCheck.Location = new Point(10, 71);
+            rangeCheck.Name = "rangeCheck";
+            rangeCheck.Size = new Size(89, 19);
+            rangeCheck.TabIndex = 3;
+            rangeCheck.TabStop = true;
+            rangeCheck.Text = "range check";
+            rangeCheck.UseVisualStyleBackColor = true;
             // 
             // dualProblemRadioButton
             // 
             dualProblemRadioButton.AutoSize = true;
-            dualProblemRadioButton.Location = new Point(160, 45);
+            dualProblemRadioButton.Location = new Point(117, 20);
             dualProblemRadioButton.Name = "dualProblemRadioButton";
             dualProblemRadioButton.Size = new Size(97, 19);
             dualProblemRadioButton.TabIndex = 6;
@@ -377,9 +365,8 @@ namespace WinFormsApp1
         private System.Windows.Forms.Button performAnalysisButton;
         private System.Windows.Forms.TextBox analysisInputTextBox;
         private System.Windows.Forms.RadioButton shadowPricesRadioButton;
-        private System.Windows.Forms.RadioButton rhsRangeRadioButton;
-        private System.Windows.Forms.RadioButton basicVarRangeRadioButton;
-        private System.Windows.Forms.RadioButton nonBasicVarRangeRadioButton;
+        private System.Windows.Forms.RadioButton changeCheck;
+        private System.Windows.Forms.RadioButton rangeCheck;
         private System.Windows.Forms.RadioButton dualProblemRadioButton;
         private System.Windows.Forms.Button exportButton;
         private Button export_button;

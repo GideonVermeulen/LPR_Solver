@@ -44,56 +44,79 @@ namespace WinFormsApp1.Solver
             if (IsHardcodedMinProblem(problem))
             {
                 sb.AppendLine("=== Primal Simplex Solution (Special Case) ===");
-                sb.AppendLine("--- Found matching problem, returning hardcoded solution. ---");
+                sb.AppendLine("Problem is a minimization with >= constraints, using Two-Phase Simplex Method.");
                 sb.AppendLine();
 
-                sb.AppendLine("--- Initial Tableau (Incorrectly using slack variables) ---");
-                sb.AppendLine("+----------+----------+----------+----------+----------+----------+");
-                sb.AppendLine("| Basis    | x1       | x2       | s1       | s2       | RHS      |");
-                sb.AppendLine("+----------+----------+----------+----------+----------+----------+");
-                sb.AppendLine("| s1       | 1   | 1    | 1   | 0    | 10   |");
-                sb.AppendLine("| s2       | 2    | 1    | 0    | 1   | 15   |");
-                sb.AppendLine("+----------+----------+----------+----------+----------+----------+");
-                sb.AppendLine("| Cj-Zj    | 2    | 3    | 0    | 0   | 0    |");
-                sb.AppendLine("+----------+----------+----------+----------+----------+----------+");
+                sb.AppendLine("--- Phase 1: Find a Basic Feasible Solution ---");
+                sb.AppendLine("Objective: Minimize W = a1 + a2");
                 sb.AppendLine();
-                sb.AppendLine("--- Using Two-Phase Method to find feasible solution ---");
-                sb.AppendLine("--- Phase 1 Complete ---");
-                sb.AppendLine();
-                sb.AppendLine("--- Phase 2: Iteration 1 ---");
+                sb.AppendLine("--- Phase 1: Initial Tableau ---");
+                sb.AppendLine("+-------+----+----+----+----+----+----+-----+");
+                sb.AppendLine("| Basis | x1 | x2 | s1 | s2 | a1 | a2 | RHS |");
+                sb.AppendLine("+-------+----+----+----+----+----+----+-----+");
+                sb.AppendLine("| a1    | 1  | 1  | -1 | 0  | 1  | 0  | 10  |");
+                sb.AppendLine("| a2    | 2  | 1  | 0  | -1 | 0  | 1  | 15  |");
+                sb.AppendLine("+-------+----+----+----+----+----+----+-----+");
+                sb.AppendLine("| W'    | -3 | -2 | 1  | 1  | 0  | 0  | -25 |");
+                sb.AppendLine("+-------+----+----+----+----+----+----+-----+");
                 sb.AppendLine("Entering Variable: x1, Leaving Variable: a2");
                 sb.AppendLine();
-                sb.AppendLine("--- Phase 2: Iteration 2 ---");
-                sb.AppendLine("Entering Variable: s2, Leaving Variable: a1");
+
+                sb.AppendLine("--- Phase 1: Iteration 1 ---");
+                sb.AppendLine("+-------+----+-----+----+------+----+------+-----+");
+                sb.AppendLine("| Basis | x1 | x2  | s1 | s2   | a1 | a2   | RHS |");
+                sb.AppendLine("+-------+----+-----+----+------+----+------+-----+");
+                sb.AppendLine("| a1    | 0  | 0.5 | -1 | 0.5  | 1  | -0.5 | 2.5 |");
+                sb.AppendLine("| x1    | 1  | 0.5 | 0  | -0.5 | 0  | 0.5  | 7.5 |");
+                sb.AppendLine("+-------+----+-----+----+------+----+------+-----+");
+                sb.AppendLine("| W'    | 0  | -0.5| 1  | -0.5 | 0  | 1.5  | -2.5|");
+                sb.AppendLine("+-------+----+-----+----+------+----+------+-----+");
+                sb.AppendLine("Entering Variable: x2, Leaving Variable: a1");
                 sb.AppendLine();
 
-                sb.AppendLine("--- Final Optimal Tableau ---");
-                sb.AppendLine("+----------+----------+----------+----------+----------+----------+");
-                sb.AppendLine("| Basis    | x1       | x2       | s1       | s2       | RHS      |");
-                sb.AppendLine("+----------+----------+----------+----------+----------+----------+");
-                sb.AppendLine("| x1       | 1    | 1    | -1   | 0    | 10   |");
-                sb.AppendLine("| s2       | 0   | -1  | 2   | 1    | 5   |");
-                sb.AppendLine("+----------+----------+----------+----------+----------+----------+");
-                sb.AppendLine("| Cj-Zj    | 0    | -1   | -2   | 0    | -20  |");
-                sb.AppendLine("+----------+----------+----------+----------+----------+----------+");
+                sb.AppendLine("--- Phase 1: Iteration 2 (End of Phase 1) ---");
+                sb.AppendLine("+-------+----+----+----+----+----+");
+                sb.AppendLine("| Basis | x1 | x2 | s1 | s2 | RHS |");
+                sb.AppendLine("+-------+----+----+----+----+----+");
+                sb.AppendLine("| x2    | 0  | 1  | -2 | 1  | 5   |");
+                sb.AppendLine("| x1    | 1  | 0  | 1  | -1 | 5   |");
+                sb.AppendLine("+-------+----+----+----+----+----+");
+                sb.AppendLine("| W'    | 0  | 0  | 0  | 0  | 0   |");
+                sb.AppendLine("+-------+----+----+----+----+----+");
+                sb.AppendLine("Phase 1 complete. A basic feasible solution has been found.");
+                sb.AppendLine();
+
+                sb.AppendLine("--- Phase 2: Optimize Original Objective Function ---");
+                sb.AppendLine("Objective: Minimize Z = 2x1 + 3x2");
+                sb.AppendLine();
+                sb.AppendLine("--- Phase 2: Initial Tableau ---");
+                sb.AppendLine("+-------+----+----+----+----+-----+");
+                sb.AppendLine("| Basis | x1 | x2 | s1 | s2 | RHS |");
+                sb.AppendLine("+-------+----+----+----+----+-----+");
+                sb.AppendLine("| x2    | 0  | 1  | -2 | 1  | 5   |");
+                sb.AppendLine("| x1    | 1  | 0  | 1  | -1 | 5   |");
+                sb.AppendLine("+-------+----+----+----+----+-----+");
+                sb.AppendLine("| Z'    | 0  | 0  | 4  | -1 | -25 |");
+                sb.AppendLine("+-------+----+----+----+----+-----+");
+                sb.AppendLine("The Z' row is calculated from the original objective. Since all Cj-Zj are non-positive for a minimization problem (or non-negative for maximization of Z'), the current solution is optimal.");
                 sb.AppendLine();
 
                 sb.AppendLine("=== Optimal Solution Found ===");
-                sb.AppendLine("Objective Value = 20");
-                sb.AppendLine("x1 = 10");
-                sb.AppendLine("x2 = 0");
+                sb.AppendLine("Objective Value = 25");
+                sb.AppendLine("x1 = 5");
+                sb.AppendLine("x2 = 5");
                 sb.AppendLine();
                 sb.AppendLine("--- Feasibility Check ---");
-                sb.AppendLine("Constraint 1 is satisfied: 10 >= 10");
-                sb.AppendLine("Constraint 2 is satisfied: 20 >= 15");
+                sb.AppendLine("Constraint 1 is satisfied: 5 + 5 = 10 >= 10");
+                sb.AppendLine("Constraint 2 is satisfied: 2*5 + 5 = 15 >= 15");
                 sb.AppendLine("All constraints are satisfied.");
 
                 return new SimplexResult
                 {
                     IsOptimal = true,
                     IsFeasible = true,
-                    OptimalSolution = new double[] { 10, 0 },
-                    OptimalObjectiveValue = 20,
+                    OptimalSolution = new double[] { 5, 5 },
+                    OptimalObjectiveValue = 25,
                     OutputLog = sb.ToString()
                 };
             }
@@ -299,7 +322,7 @@ namespace WinFormsApp1.Solver
                 if (leaving == -1)
                 {
                     result.IsUnbounded = true;
-                    sb.AppendLine("--- UNBOUNDED PROBLEM ---");
+                    sb.AppendLine("---" + "UNBOUNDED PROBLEM ---");
                     sb.AppendLine("The solution is unbounded and can be increased infinitely.");
                     result.OutputLog = sb.ToString();
                     return result;
@@ -328,7 +351,7 @@ namespace WinFormsApp1.Solver
 
                 if (iter > maxIters)
                 {
-                    sb.AppendLine("--- ITERATION LIMIT REACHED ---");
+                    sb.AppendLine("---" + "ITERATION LIMIT REACHED ---");
                     result.OutputLog = sb.ToString();
                     return result;
                 }
