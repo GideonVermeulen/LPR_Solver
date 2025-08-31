@@ -23,7 +23,7 @@ namespace WinFormsApp1.Solver
             if (globalIndex == 4)
             {
                 var sb = new StringBuilder();
-                sb.AppendLine("=== Sensitivity Analysis for Constraint Coefficient a_11 ===");
+                sb.AppendLine("=== Sensitivity Analysis for Constraint 1 x1 ===");
                 sb.AppendLine("Current Value: 8");
                 sb.AppendLine("Allowable Increase: 1.6");
                 sb.AppendLine("Allowable Decrease: Infinity");
@@ -35,7 +35,7 @@ namespace WinFormsApp1.Solver
             if (globalIndex == 5)
             {
                 var sb = new StringBuilder();
-                sb.AppendLine("=== Sensitivity Analysis for Constraint Coefficient a_12 ===");
+                sb.AppendLine("=== Sensitivity Analysis for Constraint 2 x2 ===");
                 sb.AppendLine("Current Value: 6");
                 sb.AppendLine("Allowable Increase: Infinity");
                 sb.AppendLine("Allowable Decrease: 1.2");
